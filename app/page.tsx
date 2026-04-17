@@ -181,7 +181,8 @@ export default function Home() {
   const handleUnicornPick = useCallback(
     (pick: { origin: string; destination: string; cabin: Cabin }) => {
       setMode("specific");
-      setPrefillValues({ ...pick, saverOnly: true });
+      const cheapestFirst = lastValues?.cheapestFirst ?? false;
+      setPrefillValues({ ...pick, saverOnly: true, cheapestFirst });
       const next: SearchFormValues = {
         origin: pick.origin,
         destination: pick.destination,
@@ -194,6 +195,7 @@ export default function Home() {
           })(),
         cabin: pick.cabin,
         saverOnly: true,
+        cheapestFirst,
       };
       runSearch(next);
     },
@@ -212,13 +214,21 @@ export default function Home() {
           d.setUTCDate(d.getUTCDate() + 45);
           return d.toISOString().slice(0, 10);
         })();
-      setPrefillValues({ origin, destination, cabin, saverOnly: true });
+      const cheapestFirst = lastValues?.cheapestFirst ?? false;
+      setPrefillValues({
+        origin,
+        destination,
+        cabin,
+        saverOnly: true,
+        cheapestFirst,
+      });
       runSearch({
         origin,
         destination,
         cabin,
         departDate,
         saverOnly: true,
+        cheapestFirst,
       });
     },
     [lastValues, runSearch]

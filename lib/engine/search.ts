@@ -22,6 +22,7 @@ export type SearchInput = {
   cabin: Cabin;
   selectedCardIds: string[];
   saverOnly?: boolean;
+  cheapestFirst?: boolean;
 };
 
 export type BookingOption = {
@@ -138,7 +139,8 @@ async function scoreAwards(
   cabin: Cabin,
   cashFare: number,
   selectedCardIds: string[],
-  saverOnly: boolean
+  saverOnly: boolean,
+  cheapestFirst: boolean = false
 ): Promise<AwardScore[]> {
   const selected = new Set(selectedCardIds);
   const candidates = spots
@@ -177,6 +179,7 @@ async function scoreAwards(
       AVAILABILITY_RANK[a.availability.status] -
       AVAILABILITY_RANK[b.availability.status];
     if (availDelta !== 0) return availDelta;
+    if (cheapestFirst) return a.points - b.points;
     return b.cpp - a.cpp;
   });
 
@@ -316,6 +319,7 @@ export async function searchFlights(
   const { carrier, flight } = pickAirline(key);
   const duration = routeEntry?.duration ?? "— hrs";
   const saverOnly = input.saverOnly ?? true;
+  const cheapestFirst = input.cheapestFirst ?? false;
 
   const cabinMultipliers: Record<Cabin, number> = {
     economy: 1,
@@ -349,7 +353,8 @@ export async function searchFlights(
     input.cabin,
     cashFare,
     input.selectedCardIds,
-    saverOnly
+    saverOnly,
+    cheapestFirst
   );
 
   let options: BookingOption[];
@@ -385,7 +390,8 @@ export async function searchFlights(
         input.cabin,
         cashFare,
         input.selectedCardIds,
-        saverOnly
+        saverOnly,
+        cheapestFirst
       )
     ).filter((s) => s.sweetSpot.program !== scored[0].sweetSpot.program);
     options = [
@@ -419,7 +425,8 @@ export async function searchFlights(
       input.cabin,
       cashFare,
       input.selectedCardIds,
-      saverOnly
+      saverOnly,
+      cheapestFirst
     );
     if (fallbackScored.length >= 2) {
       options = [

@@ -10,6 +10,7 @@ export type SearchFormValues = {
   departDate: string;
   cabin: Cabin;
   saverOnly: boolean;
+  cheapestFirst: boolean;
 };
 
 type Props = {
@@ -37,6 +38,7 @@ export default function SearchForm({ initial, onSubmit, isSearching }: Props) {
   const dateId = useId();
   const cabinId = useId();
   const saverId = useId();
+  const cheapId = useId();
 
   const [origin, setOrigin] = useState(initial?.origin ?? "ATL");
   const [destination, setDestination] = useState(
@@ -47,6 +49,9 @@ export default function SearchForm({ initial, onSubmit, isSearching }: Props) {
   );
   const [cabin, setCabin] = useState<Cabin>(initial?.cabin ?? "business");
   const [saverOnly, setSaverOnly] = useState(initial?.saverOnly ?? true);
+  const [cheapestFirst, setCheapestFirst] = useState(
+    initial?.cheapestFirst ?? false
+  );
 
   return (
     <section id="search-form" className="">
@@ -74,7 +79,14 @@ export default function SearchForm({ initial, onSubmit, isSearching }: Props) {
           style={{ borderRadius: "16px" }}
           onSubmit={(e) => {
             e.preventDefault();
-            onSubmit({ origin, destination, departDate, cabin, saverOnly });
+            onSubmit({
+              origin,
+              destination,
+              departDate,
+              cabin,
+              saverOnly,
+              cheapestFirst,
+            });
           }}
         >
           <div className="grid grid-cols-2 md:grid-cols-4">
@@ -140,44 +152,30 @@ export default function SearchForm({ initial, onSubmit, isSearching }: Props) {
           </div>
 
           <div className="border-t hairline flex flex-col items-start gap-4 px-4 py-4 md:flex-row md:items-center md:justify-between md:px-5">
-            <label
-              htmlFor={saverId}
-              className="flex items-center gap-3 cursor-pointer min-h-0"
-              style={{ minHeight: 0 }}
-            >
-              <span
-                className={[
-                  "relative inline-flex h-[24px] w-[42px] items-center rounded-full border transition-colors shrink-0",
-                  saverOnly
-                    ? "bg-accent border-accent"
-                    : "bg-surface border-rule-strong",
-                ].join(" ")}
-              >
-                <span
-                  className={[
-                    "absolute top-[2px] h-[18px] w-[18px] rounded-full transition-all",
-                    saverOnly
-                      ? "left-[21px] bg-white"
-                      : "left-[2px] bg-ink-faint",
-                  ].join(" ")}
-                />
-              </span>
-              <input
+            <div className="flex flex-col gap-3 md:flex-row md:items-center md:gap-6 w-full md:w-auto">
+              <ToggleRow
                 id={saverId}
-                type="checkbox"
-                checked={saverOnly}
-                onChange={(e) => setSaverOnly(e.target.checked)}
-                className="sr-only"
-              />
-              <span className="flex flex-col">
-                <span className="mono-label text-ink">Saver awards only</span>
-                <span className="text-[13px] text-ink-faint">
-                  {saverOnly
+                on={saverOnly}
+                onChange={setSaverOnly}
+                label="Saver awards only"
+                hint={
+                  saverOnly
                     ? "Ignoring standard/anytime inflation"
-                    : "Showing standard awards at 2.2× saver"}
-                </span>
-              </span>
-            </label>
+                    : "Showing standard awards at 2.2× saver"
+                }
+              />
+              <ToggleRow
+                id={cheapId}
+                on={cheapestFirst}
+                onChange={setCheapestFirst}
+                label="Cheapest points first"
+                hint={
+                  cheapestFirst
+                    ? "Ranking by lowest point cost (not best value)"
+                    : "Ranking by best value (cents per point)"
+                }
+              />
+            </div>
 
             <button
               type="submit"
@@ -202,6 +200,57 @@ function FieldLabel({ id, label }: { id: string; label: string }) {
   return (
     <label htmlFor={id} className="block px-4 pt-4 pb-2 mono-label">
       {label}
+    </label>
+  );
+}
+
+function ToggleRow({
+  id,
+  on,
+  onChange,
+  label,
+  hint,
+}: {
+  id: string;
+  on: boolean;
+  onChange: (v: boolean) => void;
+  label: string;
+  hint: string;
+}) {
+  return (
+    <label
+      htmlFor={id}
+      className="flex items-center gap-3 cursor-pointer"
+      style={{ minHeight: 0 }}
+    >
+      <span
+        className={[
+          "relative inline-flex h-[22px] w-[38px] items-center rounded-full border transition-colors shrink-0",
+          on
+            ? "bg-[#0a0a0a] border-[#0a0a0a]"
+            : "bg-surface border-rule-strong",
+        ].join(" ")}
+      >
+        <span
+          className={[
+            "absolute top-[2px] h-[16px] w-[16px] rounded-full transition-all",
+            on ? "left-[19px] bg-white" : "left-[2px] bg-ink-faint",
+          ].join(" ")}
+        />
+      </span>
+      <input
+        id={id}
+        type="checkbox"
+        checked={on}
+        onChange={(e) => onChange(e.target.checked)}
+        className="sr-only"
+      />
+      <span className="flex flex-col">
+        <span className="mono-label text-ink">{label}</span>
+        <span className="text-[12px] text-ink-faint leading-tight">
+          {hint}
+        </span>
+      </span>
     </label>
   );
 }
