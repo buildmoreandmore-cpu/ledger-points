@@ -24,11 +24,14 @@ export default function Hero() {
 
           <div className="md:col-span-5 md:pt-16">
             <p className="font-display text-[20px] leading-[1.55] text-ink-soft md:text-[22px]">
-              Tell us the cards in your wallet. Tell us the flight you&apos;re
-              eyeing. We&apos;ll return three booking options: the cash fare,
-              your best transfer-partner redemption, and the sweet-spot award
-              the rest of the internet forgets to mention. Your Google Flights
-              tab stays open for comparison — but it will not win this argument.
+              <span className="float-left mr-2 font-display text-[64px] leading-[0.85] text-accent">
+                O
+              </span>
+              ne search replaces Seats.aero, AwardFares, ExpertFlyer,
+              AwardWallet, and every other tab you&apos;ve got open. Tell us
+              which cards live in your wallet. We&apos;ll return three bookable
+              options — cash, transfer partner, and the sweet-spot award —
+              filtered to what you can actually redeem today.
             </p>
             <div className="mt-10 border-t hairline pt-6">
               <div className="mono-label">What you won&apos;t get</div>

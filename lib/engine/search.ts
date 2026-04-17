@@ -36,6 +36,11 @@ export type BookingOption = {
   isBest: boolean;
   availability: AvailabilityResult | null;
   programKey: string | null;
+  pointsRequired: number | null;
+  currencyFrom: import("../data/cards").CardCurrency | null;
+  cashFare: number;
+  awardValueDollars: number | null;
+  cpp: number | null;
 };
 
 export type SearchResult = {
@@ -99,6 +104,11 @@ function cashOption(
     isBest: false,
     availability: null,
     programKey: null,
+    pointsRequired: null,
+    currencyFrom: null,
+    cashFare: actualFare,
+    awardValueDollars: null,
+    cpp: null,
   };
 }
 
@@ -212,6 +222,11 @@ function awardOption(
     isBest: isBest && availability.status === "open",
     availability,
     programKey: sweetSpot.program,
+    pointsRequired: points,
+    currencyFrom: sweetSpot.from,
+    cashFare,
+    awardValueDollars: savings,
+    cpp,
   };
 }
 
@@ -235,6 +250,11 @@ function walletGapOption(rank: string, cabin: Cabin): BookingOption {
     isBest: false,
     availability: null,
     programKey: null,
+    pointsRequired: null,
+    currencyFrom: null,
+    cashFare: 0,
+    awardValueDollars: null,
+    cpp: null,
   };
 }
 
@@ -257,6 +277,11 @@ function earnOption(rank: string, cabin: Cabin, cashFare: number): BookingOption
     isBest: false,
     availability: null,
     programKey: null,
+    pointsRequired: null,
+    currencyFrom: null,
+    cashFare,
+    awardValueDollars: null,
+    cpp: null,
   };
 }
 

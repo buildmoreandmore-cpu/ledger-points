@@ -1,6 +1,13 @@
+"use client";
+
+import { useState } from "react";
 import type { BookingOption } from "@/lib/engine/search";
 import { formatSeatsLeft } from "@/lib/engine/availability";
 import { getBookingUrl } from "@/lib/data/bookingUrls";
+import { CARD_BY_ID, type CardCurrency } from "@/lib/data/cards";
+import type { Cabin } from "@/lib/data/routes";
+import { getRouteStats } from "@/lib/engine/routeStats";
+import SeatMapPreview from "./SeatMapPreview";
 
 type Props = {
   option: BookingOption;
@@ -8,9 +15,15 @@ type Props = {
   destination: string;
   departDate: string;
   duration: string;
+  cabin: Cabin;
   isSearching: boolean;
   delayClass: string;
+  balanceByCurrency: Partial<Record<CardCurrency, number>>;
+  expiringCardIds: Set<string>;
+  selectedCardIds: string[];
 };
+
+const fmt = new Intl.NumberFormat("en-US");
 
 const DOT = (
   <svg
@@ -21,6 +34,30 @@ const DOT = (
     className="mt-[6px] text-accent"
   >
     <circle cx="4" cy="4" r="3" fill="currentColor" />
+  </svg>
+);
+
+const BELL = (
+  <svg
+    width="14"
+    height="14"
+    viewBox="0 0 16 16"
+    fill="none"
+    aria-hidden="true"
+    className="inline-block mr-2 -mt-[2px]"
+  >
+    <path
+      d="M4 6.5 C4 4.5 5.5 3 8 3 C10.5 3 12 4.5 12 6.5 V10 L13 11 H3 L4 10 Z"
+      stroke="currentColor"
+      strokeWidth="1"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M6.5 12 C6.5 12.8 7 13.3 8 13.3 C9 13.3 9.5 12.8 9.5 12"
+      stroke="currentColor"
+      strokeWidth="1"
+      strokeLinecap="round"
+    />
   </svg>
 );
 
@@ -79,7 +116,6 @@ function FlightStrip({
             stroke="currentColor"
             strokeWidth="1"
             className={isSearching ? "march-dash" : ""}
-            strokeDasharray={isSearching ? undefined : "0"}
           />
           <g transform="translate(54 0)" className="text-accent">
             <path
@@ -95,18 +131,114 @@ function FlightStrip({
   );
 }
 
+function GoalTracker({
+  needed,
+  have,
+  currency,
+  selectedCardIds,
+}: {
+  needed: number;
+  have: number;
+  currency: CardCurrency;
+  selectedCardIds: string[];
+}) {
+  const short = Math.max(0, needed - have);
+  const pct = Math.min(100, Math.max(4, (have / needed) * 100));
+  const sourceCard = selectedCardIds
+    .map((id) => CARD_BY_ID[id])
+    .find((c) => c && c.currency === currency);
+  const sourceLabel = sourceCard
+    ? `Transfer ${fmt.format(short)} ${currency} from ${sourceCard.bank} ${sourceCard.name} →`
+    : `Acquire ${fmt.format(short)} ${currency} to close the gap →`;
+
+  return (
+    <div className="mt-auto flex flex-col gap-3 border hairline-strong px-4 py-4">
+      <div className="mono-label text-accent">
+        You&apos;re {fmt.format(short)} points short
+      </div>
+      <div
+        className="relative h-[3px] w-full bg-rule overflow-hidden"
+        role="progressbar"
+        aria-valuemin={0}
+        aria-valuemax={needed}
+        aria-valuenow={have}
+      >
+        <div
+          className="absolute inset-y-0 left-0 bg-accent"
+          style={{ width: `${pct}%` }}
+        />
+      </div>
+      <div className="mono-label text-ink-soft">{sourceLabel}</div>
+    </div>
+  );
+}
+
+function AlertMeButton() {
+  const [watching, setWatching] = useState(false);
+  return (
+    <button
+      type="button"
+      onClick={() => setWatching((w) => !w)}
+      aria-pressed={watching}
+      className={[
+        "mt-auto mono-label px-5 py-3 text-center transition-colors",
+        watching
+          ? "bg-accent text-cream border border-accent"
+          : "border hairline-strong text-ink hover:bg-ink hover:text-cream",
+      ].join(" ")}
+    >
+      {BELL}
+      {watching ? "Watching · we'll notify you" : "Alert me when space opens"}
+    </button>
+  );
+}
+
 export default function OptionCard({
   option,
   origin,
   destination,
   departDate,
   duration,
+  cabin,
   isSearching,
   delayClass,
+  balanceByCurrency,
+  expiringCardIds,
+  selectedCardIds,
 }: Props) {
+  const [showMap, setShowMap] = useState(false);
   const isMuted = option.availability?.status === "none";
+  const routeKey = `${origin}-${destination}`;
+  const stats = getRouteStats(routeKey);
+
+  const hasBalance = option.currencyFrom
+    ? balanceByCurrency[option.currencyFrom] ?? 0
+    : 0;
+  const needs = option.pointsRequired ?? 0;
+  const isShort =
+    option.pointsRequired !== null &&
+    option.currencyFrom !== null &&
+    hasBalance < needs;
+
+  const cardIdsForCurrency = option.currencyFrom
+    ? selectedCardIds.filter(
+        (id) => CARD_BY_ID[id]?.currency === option.currencyFrom
+      )
+    : [];
+  const usesExpiring = cardIdsForCurrency.some((id) =>
+    expiringCardIds.has(id)
+  );
+
+  const availabilityBlocks =
+    option.availability?.status === "waitlist" ||
+    option.availability?.status === "none";
+
   const bookingUrl = getBookingUrl(
-    { programKey: option.programKey, airline: option.airline, rank: option.rank },
+    {
+      programKey: option.programKey,
+      airline: option.airline,
+      rank: option.rank,
+    },
     { origin, destination, departDate }
   );
   const isCash = option.rank.startsWith("01");
@@ -115,6 +247,38 @@ export default function OptionCard({
     : bookingUrl
     ? `Continue on ${option.airline.split(" ")[0]}`
     : "No booking path yet";
+
+  let action: React.ReactNode;
+  if (!isCash && availabilityBlocks) {
+    action = <AlertMeButton />;
+  } else if (!isCash && isShort) {
+    action = (
+      <GoalTracker
+        needed={needs}
+        have={hasBalance}
+        currency={option.currencyFrom!}
+        selectedCardIds={selectedCardIds}
+      />
+    );
+  } else if (bookingUrl) {
+    action = (
+      <a
+        href={bookingUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="mt-auto mono-label border hairline-strong px-5 py-3 text-ink text-center transition-colors hover:bg-ink hover:text-cream"
+      >
+        {bookLabel}
+        <span className="inline-block pl-2 italic">↗</span>
+      </a>
+    );
+  } else {
+    action = (
+      <span className="mt-auto mono-label border hairline px-5 py-3 text-ink-faint text-center cursor-not-allowed">
+        {bookLabel}
+      </span>
+    );
+  }
 
   return (
     <article
@@ -151,10 +315,29 @@ export default function OptionCard({
           <span className="mono-label text-accent">{option.cabinLabel}</span>
           <AvailabilityBadge option={option} />
         </div>
-        <h3 className="font-display text-[24px] leading-[1.15] text-ink">
-          {option.airline}
-        </h3>
+        <div
+          className="relative inline-block w-fit"
+          onMouseEnter={() => setShowMap(true)}
+          onMouseLeave={() => setShowMap(false)}
+          onFocus={() => setShowMap(true)}
+          onBlur={() => setShowMap(false)}
+          tabIndex={0}
+        >
+          <h3 className="font-display text-[24px] leading-[1.15] text-ink cursor-help border-b border-dotted border-rule-strong">
+            {option.airline}
+          </h3>
+          {showMap ? (
+            <SeatMapPreview
+              cabin={cabin}
+              seed={`${routeKey}|${option.programKey ?? "cash"}`}
+            />
+          ) : null}
+        </div>
         <span className="mono-label">{option.tag}</span>
+        <span className="mono-label text-ink-faint">
+          On this route · Avg {stats.avgSaverSeats} saver seats · Typically
+          released {stats.typicallyReleased} days out · {stats.reliabilityLabel}
+        </span>
       </div>
 
       <div>
@@ -184,23 +367,18 @@ export default function OptionCard({
             <span className="mono-label text-ink">{row.val}</span>
           </li>
         ))}
+        {usesExpiring ? (
+          <li className="flex items-start gap-3">
+            <span className="mt-[6px] inline-block h-[8px] w-[8px] bg-accent" />
+            <span className="flex-1 font-display text-[14px] leading-[1.4] text-accent-deep">
+              Uses expiring points — book before your soonest expiration to
+              avoid losing balance.
+            </span>
+          </li>
+        ) : null}
       </ul>
 
-      {bookingUrl ? (
-        <a
-          href={bookingUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-auto mono-label border hairline-strong px-5 py-3 text-ink text-center transition-colors hover:bg-ink hover:text-cream"
-        >
-          {bookLabel}
-          <span className="inline-block pl-2 italic">↗</span>
-        </a>
-      ) : (
-        <span className="mt-auto mono-label border hairline px-5 py-3 text-ink-faint text-center cursor-not-allowed">
-          {bookLabel}
-        </span>
-      )}
+      {action}
     </article>
   );
 }

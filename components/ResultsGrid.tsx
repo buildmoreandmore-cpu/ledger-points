@@ -2,13 +2,19 @@
 
 import type { Cabin } from "@/lib/data/routes";
 import type { SearchResult } from "@/lib/engine/search";
+import type { CardCurrency } from "@/lib/data/cards";
 import OptionCard from "./OptionCard";
 import FlexStrip from "./FlexStrip";
+import EditorialCallout from "./EditorialCallout";
+import TransferBonusBanner from "./TransferBonusBanner";
 
 type Props = {
   result: SearchResult;
   status: "idle" | "searching" | "ready";
   onPickFlexDate: (date: string) => void;
+  balanceByCurrency: Partial<Record<CardCurrency, number>>;
+  expiringCardIds: Set<string>;
+  selectedCardIds: string[];
 };
 
 const DELAYS = ["fade-up-delay-1", "fade-up-delay-2", "fade-up-delay-3"];
@@ -39,6 +45,9 @@ export default function ResultsGrid({
   result,
   status,
   onPickFlexDate,
+  balanceByCurrency,
+  expiringCardIds,
+  selectedCardIds,
 }: Props) {
   const { route, options, flexDates } = result;
 
@@ -67,6 +76,9 @@ export default function ResultsGrid({
         </div>
 
         <StatusBar status={status} />
+
+        <TransferBonusBanner options={options} />
+        <EditorialCallout options={options} />
       </div>
 
       <div className="mx-auto max-w-[1440px] px-0 md:px-12">
@@ -79,8 +91,12 @@ export default function ResultsGrid({
               destination={route.destination}
               departDate={route.departDate}
               duration={route.duration}
+              cabin={route.cabin}
               isSearching={status === "searching"}
               delayClass={DELAYS[i] ?? DELAYS[0]}
+              balanceByCurrency={balanceByCurrency}
+              expiringCardIds={expiringCardIds}
+              selectedCardIds={selectedCardIds}
             />
           ))}
         </div>
@@ -104,7 +120,7 @@ function StatusBar({
   const isSearching = status === "searching";
   const isReady = status === "ready";
   return (
-    <div className="mt-8 mb-14 border hairline-strong bg-ink text-cream">
+    <div className="mt-8 mb-10 border hairline-strong bg-ink text-cream">
       <div className="flex items-center gap-4 px-6 py-4">
         <span
           className={[
