@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   title: "RedeemMax — Every point. Maximum trip.",
   description:
     "Every point. Maximum trip. An award-search engine filtered to the cards in your wallet — cash, best transfer partner, and the sweet-spot redemption Google Flights will never surface.",
-  metadataBase: new URL("https://ledger-points.vercel.app"),
+  metadataBase: new URL("https://redeemmax.com"),
   openGraph: {
     title: "RedeemMax — Every point. Maximum trip.",
     description:
