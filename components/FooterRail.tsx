@@ -9,7 +9,10 @@ export default function FooterRail() {
               Redeem<span className="text-accent">Max</span>
               <span className="text-ink-faint text-[15px] ml-1">.com</span>
             </div>
-            <p className="mt-2 text-[14px] leading-[1.5] text-ink-soft md:text-[15px]">
+            <div className="mt-1 text-[14px] font-medium text-ink">
+              Every point. <em className="italic text-accent not-italic font-semibold">Maximum trip.</em>
+            </div>
+            <p className="mt-3 text-[14px] leading-[1.5] text-ink-soft md:text-[15px]">
               A points-to-travel engine for people who already know what
               Ultimate Rewards are for.
             </p>

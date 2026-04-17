@@ -7,9 +7,12 @@ export default function Hero() {
             <div className="mono-label mb-5 text-accent">
               RedeemMax · Private preview
             </div>
-            <h1 className="display text-[36px] leading-[1.05] md:text-[64px] lg:text-[72px]">
-              A points engine <em>filtered to your wallet.</em>
+            <h1 className="display text-[40px] leading-[1.02] md:text-[72px] lg:text-[80px]">
+              Every point. <em>Maximum trip.</em>
             </h1>
+            <p className="mt-5 text-[18px] md:text-[22px] font-medium text-ink-soft leading-[1.3] max-w-[620px]">
+              An award engine filtered to the cards in your wallet.
+            </p>
             <div className="mt-8 flex flex-wrap items-center gap-x-4 gap-y-2 text-ink-soft">
               <div className="mono-label text-ink">
                 Built for frequent flyers
