@@ -1,11 +1,14 @@
 import type { BookingOption } from "@/lib/engine/search";
 import { formatSeatsLeft } from "@/lib/engine/availability";
+import { getBookingUrl } from "@/lib/data/bookingUrls";
 
 type Props = {
   option: BookingOption;
   origin: string;
   destination: string;
+  departDate: string;
   duration: string;
+  isSearching: boolean;
   delayClass: string;
 };
 
@@ -52,10 +55,12 @@ function FlightStrip({
   origin,
   destination,
   duration,
+  isSearching,
 }: {
   origin: string;
   destination: string;
   duration: string;
+  isSearching: boolean;
 }) {
   return (
     <div className="flex items-center gap-4 border-b hairline pb-6">
@@ -73,7 +78,8 @@ function FlightStrip({
             y2="7"
             stroke="currentColor"
             strokeWidth="1"
-            className="march-dash"
+            className={isSearching ? "march-dash" : ""}
+            strokeDasharray={isSearching ? undefined : "0"}
           />
           <g transform="translate(54 0)" className="text-accent">
             <path
@@ -93,11 +99,23 @@ export default function OptionCard({
   option,
   origin,
   destination,
+  departDate,
   duration,
+  isSearching,
   delayClass,
 }: Props) {
-  const isMuted =
-    option.availability?.status === "none" && !option.programKey === false;
+  const isMuted = option.availability?.status === "none";
+  const bookingUrl = getBookingUrl(
+    { programKey: option.programKey, airline: option.airline, rank: option.rank },
+    { origin, destination, departDate }
+  );
+  const isCash = option.rank.startsWith("01");
+  const bookLabel = isCash
+    ? "Open on Google Flights"
+    : bookingUrl
+    ? `Continue on ${option.airline.split(" ")[0]}`
+    : "No booking path yet";
+
   return (
     <article
       className={[
@@ -125,6 +143,7 @@ export default function OptionCard({
         origin={origin}
         destination={destination}
         duration={duration}
+        isSearching={isSearching}
       />
 
       <div className="flex flex-col gap-2">
@@ -154,20 +173,34 @@ export default function OptionCard({
           <li key={i} className="flex items-start gap-3">
             {DOT}
             <span className="flex-1 font-display text-[14px] leading-[1.4] text-ink-soft">
-              {row.desc}
+              {row.desc === "Cents per point" ? (
+                <span title="Cents per point — your cash-to-award efficiency. Anything above 2 cpp is generally worth the transfer.">
+                  {row.desc}
+                </span>
+              ) : (
+                row.desc
+              )}
             </span>
             <span className="mono-label text-ink">{row.val}</span>
           </li>
         ))}
       </ul>
 
-      <button
-        type="button"
-        className="mt-auto mono-label border hairline-strong px-5 py-3 text-ink transition-colors hover:bg-ink hover:text-cream"
-      >
-        Book this option
-        <span className="inline-block pl-2 italic">↗</span>
-      </button>
+      {bookingUrl ? (
+        <a
+          href={bookingUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-auto mono-label border hairline-strong px-5 py-3 text-ink text-center transition-colors hover:bg-ink hover:text-cream"
+        >
+          {bookLabel}
+          <span className="inline-block pl-2 italic">↗</span>
+        </a>
+      ) : (
+        <span className="mt-auto mono-label border hairline px-5 py-3 text-ink-faint text-center cursor-not-allowed">
+          {bookLabel}
+        </span>
+      )}
     </article>
   );
 }

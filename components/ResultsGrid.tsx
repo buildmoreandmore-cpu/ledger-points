@@ -77,7 +77,9 @@ export default function ResultsGrid({
               option={opt}
               origin={route.origin}
               destination={route.destination}
+              departDate={route.departDate}
               duration={route.duration}
+              isSearching={status === "searching"}
               delayClass={DELAYS[i] ?? DELAYS[0]}
             />
           ))}

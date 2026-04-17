@@ -48,7 +48,7 @@ export default function CardLibrary({ selectedCardIds, onToggle }: Props) {
         </div>
 
         <div className="mt-14 grid grid-cols-2 gap-3 md:grid-cols-4">
-          {CARDS.map((card) => {
+          {CARDS.map((card, i) => {
             const isOn = selected.has(card.id);
             return (
               <button
@@ -58,8 +58,9 @@ export default function CardLibrary({ selectedCardIds, onToggle }: Props) {
                 aria-checked={isOn}
                 aria-label={`${card.bank} ${card.name}`}
                 onClick={() => onToggle(card.id)}
+                style={{ animationDelay: `${i * 45}ms` }}
                 className={[
-                  "group relative text-left border transition-all duration-150",
+                  "chip-in group relative text-left border transition-all duration-150",
                   "px-5 py-5 flex flex-col gap-3 min-h-[140px]",
                   isOn
                     ? "bg-ink text-cream border-ink"

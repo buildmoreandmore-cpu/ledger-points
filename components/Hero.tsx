@@ -5,7 +5,8 @@ export default function Hero() {
         <div className="grid gap-14 md:grid-cols-12">
           <div className="md:col-span-7">
             <div className="mono-label mb-8">
-              Issue N°01 · The Transfer-Partner Dossier
+              Issue N°01 · The Transfer-Partner Dossier · Edited by Martin
+              Francis, Atlanta
             </div>
             <h1 className="display text-[56px] leading-[1.02] md:text-[96px] md:leading-[0.98]">
               A points engine that <em>finally</em>

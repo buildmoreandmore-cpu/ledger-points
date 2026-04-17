@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Masthead from "@/components/Masthead";
 import Hero from "@/components/Hero";
 import CardLibrary from "@/components/CardLibrary";
@@ -13,6 +13,8 @@ import { searchFlights, type SearchResult } from "@/lib/engine/search";
 
 type Status = "idle" | "searching" | "ready";
 
+const WALLET_KEY = "lp:wallet:v1";
+
 export default function Home() {
   const [selectedCardIds, setSelectedCardIds] = useState<string[]>([
     "csr",
@@ -22,6 +24,34 @@ export default function Home() {
   const [status, setStatus] = useState<Status>("idle");
   const [lastValues, setLastValues] = useState<SearchFormValues | null>(null);
   const resultsRef = useRef<HTMLDivElement | null>(null);
+  const hasHydrated = useRef(false);
+
+  useEffect(() => {
+    try {
+      const raw = window.localStorage.getItem(WALLET_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw) as unknown;
+        if (
+          Array.isArray(parsed) &&
+          parsed.every((x) => typeof x === "string")
+        ) {
+          setSelectedCardIds(parsed);
+        }
+      }
+    } catch {
+      // ignore malformed storage
+    }
+    hasHydrated.current = true;
+  }, []);
+
+  useEffect(() => {
+    if (!hasHydrated.current) return;
+    try {
+      window.localStorage.setItem(WALLET_KEY, JSON.stringify(selectedCardIds));
+    } catch {
+      // quota/unavailable — not fatal for a demo
+    }
+  }, [selectedCardIds]);
 
   const toggleCard = useCallback((cardId: string) => {
     setSelectedCardIds((prev) =>

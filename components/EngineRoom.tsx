@@ -53,10 +53,10 @@ const SOURCES: Source[] = [
   },
   {
     n: "07",
-    name: "Our editorial desk",
+    name: "Martin at the desk",
     type: "Editorial",
     detail: "Point valuations · sweet-spot notes · rewrites",
-    note: "A human signs off on every route before it ships.",
+    note: "I sign off on every route before it ships. No bots, no scraped filler.",
   },
 ];
 
