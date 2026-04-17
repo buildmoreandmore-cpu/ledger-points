@@ -21,15 +21,16 @@ const mono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Ledger/Points — award search filtered to your wallet",
+  title: "RedeemMax — award search filtered to your wallet",
   description:
     "Tell us the cards in your wallet. Tell us the flight. We'll show you the cash fare, the best transfer partner, and the award redemption Google Flights will never surface.",
   metadataBase: new URL("https://ledger-points.vercel.app"),
   openGraph: {
-    title: "Ledger/Points",
+    title: "RedeemMax",
     description:
-      "A points-to-travel engine filtered to the cards in your wallet.",
+      "Award search filtered to the cards in your wallet. One search replaces Seats.aero, AwardFares, AwardWallet, and every other tab.",
     type: "website",
+    siteName: "RedeemMax",
   },
 };
 

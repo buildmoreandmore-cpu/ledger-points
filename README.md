@@ -1,4 +1,4 @@
-# Ledger/Points
+# RedeemMax
 
 A points-to-travel recommendation engine. Users pick the credit cards they carry, search a flight, and receive three booking options: the cash fare, their best transfer-partner redemption, and a sweet-spot award the rest of the internet forgets to mention.
 

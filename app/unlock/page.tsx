@@ -50,29 +50,31 @@ function UnlockForm() {
     <div className="w-full max-w-[440px]">
       <div className="mb-8 flex items-center gap-2.5">
         <svg
-          width="22"
-          height="22"
-          viewBox="0 0 20 20"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
           fill="none"
           aria-hidden="true"
-          className="text-accent"
         >
-          <path
-            d="M10 1 L18.66 6 V14 L10 19 L1.34 14 V6 Z"
-            stroke="currentColor"
-            strokeWidth="1.2"
-            fill="var(--accent-soft)"
+          <rect
+            x="2"
+            y="2"
+            width="20"
+            height="20"
+            rx="6"
+            fill="var(--accent)"
           />
           <path
-            d="M10 5 L10 15 M5.5 7.5 L14.5 12.5 M14.5 7.5 L5.5 12.5"
-            stroke="currentColor"
-            strokeWidth="0.9"
+            d="M7.5 14.5 L10.5 11.5 L13 14 L16.5 9"
+            stroke="#ffffff"
+            strokeWidth="1.6"
             strokeLinecap="round"
+            strokeLinejoin="round"
+            fill="none"
           />
         </svg>
-        <span className="display text-[18px] text-ink">
-          Ledger<span className="text-ink-faint">/</span>
-          <span className="text-accent">Points</span>
+        <span className="display text-[18px] text-ink tracking-tight">
+          Redeem<span className="text-accent">Max</span>
         </span>
       </div>
 

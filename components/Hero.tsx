@@ -5,7 +5,7 @@ export default function Hero() {
         <div className="grid gap-10 md:grid-cols-12 md:gap-14">
           <div className="md:col-span-7">
             <div className="mono-label mb-5 text-accent">
-              Ledger/Points · Private preview
+              RedeemMax · Private preview
             </div>
             <h1 className="display text-[36px] leading-[1.05] md:text-[64px] lg:text-[72px]">
               A points engine <em>filtered to your wallet.</em>

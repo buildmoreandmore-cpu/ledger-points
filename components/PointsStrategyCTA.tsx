@@ -38,7 +38,7 @@ export default function PointsStrategyCTA() {
                 Includes a written strategy note you keep
               </div>
               <a
-                href="mailto:hello@ledger-points.com?subject=Points+Strategy+Call"
+                href="mailto:hello@redeemmax.com?subject=Points+Strategy+Call"
                 className="mt-5 mono-label inline-flex w-full justify-center bg-[#0a0a0a] text-white px-5 py-3 hover:opacity-85 transition-opacity font-medium"
               >
                 Request a strategy call →

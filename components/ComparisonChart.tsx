@@ -81,7 +81,7 @@ export default function ComparisonChart() {
               Tool everyone uses
             </span>
             <span className="mono-label text-white/50 text-right">
-              Ledger/Points
+              RedeemMax
             </span>
           </div>
 

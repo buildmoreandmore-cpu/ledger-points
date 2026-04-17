@@ -6,8 +6,8 @@ export default function FooterRail() {
         <div className="grid gap-8 md:grid-cols-12">
           <div className="md:col-span-5">
             <div className="display text-[20px] md:text-[22px] text-ink">
-              Ledger<span className="text-ink-faint">/</span>
-              <span className="text-accent">Points</span>
+              Redeem<span className="text-accent">Max</span>
+              <span className="text-ink-faint text-[15px] ml-1">.com</span>
             </div>
             <p className="mt-2 text-[14px] leading-[1.5] text-ink-soft md:text-[15px]">
               A points-to-travel engine for people who already know what
@@ -56,7 +56,7 @@ export default function FooterRail() {
         </div>
 
         <div className="mt-10 flex flex-col gap-2 border-t hairline pt-5 md:flex-row md:items-center md:justify-between">
-          <span className="mono-label">© {year} Ledger/Points</span>
+          <span className="mono-label">© {year} RedeemMax.com</span>
           <span className="mono-label text-ink-faint">
             Award pricing data compiled from public carrier charts
           </span>

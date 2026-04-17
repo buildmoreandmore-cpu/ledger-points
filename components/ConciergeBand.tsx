@@ -32,7 +32,7 @@ export default function ConciergeBand() {
                 No subscription · cancel anytime
               </div>
               <a
-                href="mailto:concierge@ledger-points.com?subject=Concierge+Booking"
+                href="mailto:concierge@redeemmax.com?subject=Concierge+Booking"
                 className="mt-5 mono-label inline-flex w-full justify-center bg-white text-ink px-5 py-3 hover:bg-white/90 transition-colors font-medium"
               >
                 Start a concierge booking →
