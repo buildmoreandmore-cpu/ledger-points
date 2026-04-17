@@ -49,42 +49,43 @@ export default function SearchForm({ initial, onSubmit, isSearching }: Props) {
   const [saverOnly, setSaverOnly] = useState(initial?.saverOnly ?? true);
 
   return (
-    <section id="search" className="border-b hairline">
-      <div className="mx-auto max-w-[1440px] px-6 py-20 md:px-12 md:py-28">
-        <div className="grid gap-8 md:grid-cols-12">
-          <div className="md:col-span-4">
-            <div className="mono-label mb-6 text-accent">
-              02 · Search a Flight
+    <section id="search-form" className="">
+      <div className="mx-auto max-w-[1440px] px-4 md:px-8 pb-14 md:pb-20">
+        <div className="grid gap-6 md:grid-cols-12 md:gap-10 mb-8">
+          <div className="md:col-span-6">
+            <div className="mono-label mb-3 text-accent">
+              02 · Search a flight
             </div>
-            <h2 className="display text-[44px] leading-[1.04] md:text-[56px]">
+            <h2 className="display text-[28px] md:text-[40px]">
               The same inputs — a <em>different</em> kind of answer.
             </h2>
           </div>
-          <div className="md:col-span-7 md:col-start-6">
-            <p className="font-display text-[18px] leading-[1.55] text-ink-soft">
+          <div className="md:col-span-5 md:col-start-8 md:pt-4">
+            <p className="text-[15px] leading-[1.55] text-ink-soft md:text-[16px]">
               Booking sites ask <em>where</em> you&apos;re going. We also ask
-              which charts you can reach. That second question is where the
-              three-hundred-dollar difference hides. Pick a cabin and a date;
-              we&apos;ll price it three ways.
+              which charts you can reach. Pick a cabin and a date; we&apos;ll
+              price it three ways.
             </p>
           </div>
         </div>
 
         <form
-          className="mt-14 border hairline-strong bg-cream/50"
+          className="card-shadow border hairline-strong bg-paper overflow-hidden"
+          style={{ borderRadius: "16px" }}
           onSubmit={(e) => {
             e.preventDefault();
             onSubmit({ origin, destination, departDate, cabin, saverOnly });
           }}
         >
-          <div className="grid grid-cols-1 md:grid-cols-12">
-            <div className="border-b md:border-b-0 md:border-r hairline md:col-span-3">
+          <div className="grid grid-cols-2 md:grid-cols-4">
+            <div className="border-b md:border-b-0 md:border-r hairline">
               <FieldLabel id={originId} label="Origin" />
               <select
                 id={originId}
                 value={origin}
                 onChange={(e) => setOrigin(e.target.value)}
-                className="w-full bg-transparent px-5 pb-5 font-display text-[22px] tracking-tight text-ink outline-none"
+                className="w-full bg-transparent px-4 pb-4 font-medium text-[18px] md:text-[22px] text-ink outline-none"
+                style={{ borderRadius: 0 }}
               >
                 {ORIGINS.map((a) => (
                   <option key={a} value={a}>
@@ -93,13 +94,14 @@ export default function SearchForm({ initial, onSubmit, isSearching }: Props) {
                 ))}
               </select>
             </div>
-            <div className="border-b md:border-b-0 md:border-r hairline md:col-span-3">
+            <div className="border-b md:border-b-0 md:border-r hairline border-l md:border-l-0">
               <FieldLabel id={destId} label="Destination" />
               <select
                 id={destId}
                 value={destination}
                 onChange={(e) => setDestination(e.target.value)}
-                className="w-full bg-transparent px-5 pb-5 font-display text-[22px] tracking-tight text-ink outline-none"
+                className="w-full bg-transparent px-4 pb-4 font-medium text-[18px] md:text-[22px] text-ink outline-none"
+                style={{ borderRadius: 0 }}
               >
                 {DESTINATIONS.map((a) => (
                   <option key={a} value={a}>
@@ -108,23 +110,25 @@ export default function SearchForm({ initial, onSubmit, isSearching }: Props) {
                 ))}
               </select>
             </div>
-            <div className="border-b md:border-b-0 md:border-r hairline md:col-span-3">
+            <div className="md:border-r hairline">
               <FieldLabel id={dateId} label="Depart" />
               <input
                 id={dateId}
                 type="date"
                 value={departDate}
                 onChange={(e) => setDepartDate(e.target.value)}
-                className="w-full bg-transparent px-5 pb-5 font-display text-[18px] tracking-tight text-ink outline-none"
+                className="w-full bg-transparent px-4 pb-4 text-[15px] md:text-[17px] text-ink outline-none"
+                style={{ borderRadius: 0 }}
               />
             </div>
-            <div className="md:col-span-3">
+            <div className="border-l md:border-l-0">
               <FieldLabel id={cabinId} label="Cabin" />
               <select
                 id={cabinId}
                 value={cabin}
                 onChange={(e) => setCabin(e.target.value as Cabin)}
-                className="w-full bg-transparent px-5 pb-5 font-display text-[18px] tracking-tight text-ink outline-none"
+                className="w-full bg-transparent px-4 pb-4 text-[15px] md:text-[17px] text-ink outline-none"
+                style={{ borderRadius: 0 }}
               >
                 {CABINS.map((c) => (
                   <option key={c.value} value={c.value}>
@@ -135,24 +139,25 @@ export default function SearchForm({ initial, onSubmit, isSearching }: Props) {
             </div>
           </div>
 
-          <div className="border-t hairline flex flex-col items-start gap-5 px-5 py-4 md:flex-row md:items-center md:justify-between">
+          <div className="border-t hairline flex flex-col items-start gap-4 px-4 py-4 md:flex-row md:items-center md:justify-between md:px-5">
             <label
               htmlFor={saverId}
-              className="flex items-center gap-3 cursor-pointer"
+              className="flex items-center gap-3 cursor-pointer min-h-0"
+              style={{ minHeight: 0 }}
             >
               <span
                 className={[
-                  "relative inline-flex h-[22px] w-[40px] items-center rounded-full border transition-colors",
+                  "relative inline-flex h-[24px] w-[42px] items-center rounded-full border transition-colors shrink-0",
                   saverOnly
-                    ? "bg-ink border-ink"
-                    : "bg-paper border-rule-strong",
+                    ? "bg-accent border-accent"
+                    : "bg-surface border-rule-strong",
                 ].join(" ")}
               >
                 <span
                   className={[
-                    "absolute top-[2px] h-[16px] w-[16px] rounded-full transition-all",
+                    "absolute top-[2px] h-[18px] w-[18px] rounded-full transition-all",
                     saverOnly
-                      ? "left-[20px] bg-accent"
+                      ? "left-[21px] bg-white"
                       : "left-[2px] bg-ink-faint",
                   ].join(" ")}
                 />
@@ -164,11 +169,13 @@ export default function SearchForm({ initial, onSubmit, isSearching }: Props) {
                 onChange={(e) => setSaverOnly(e.target.checked)}
                 className="sr-only"
               />
-              <span className="mono-label text-ink">Saver Awards Only</span>
-              <span className="font-display text-[14px] italic text-ink-faint">
-                {saverOnly
-                  ? "recommended · ignores standard/anytime inflation"
-                  : "showing standard awards · 2.2× the saver cost"}
+              <span className="flex flex-col">
+                <span className="mono-label text-ink">Saver awards only</span>
+                <span className="text-[13px] text-ink-faint">
+                  {saverOnly
+                    ? "Ignoring standard/anytime inflation"
+                    : "Showing standard awards at 2.2× saver"}
+                </span>
               </span>
             </label>
 
@@ -176,14 +183,13 @@ export default function SearchForm({ initial, onSubmit, isSearching }: Props) {
               type="submit"
               disabled={isSearching}
               className={[
-                "group mono-label px-8 py-3 transition-all",
+                "mono-label w-full md:w-auto px-6 py-3 transition-all font-medium shrink-0",
                 isSearching
-                  ? "bg-ink-faint text-cream cursor-wait"
-                  : "bg-ink text-cream hover:bg-accent-deep",
+                  ? "bg-ink-faint text-white cursor-wait"
+                  : "bg-accent text-white hover:bg-accent-deep",
               ].join(" ")}
             >
-              {isSearching ? "Querying inventory" : "Run Three Options"}
-              <span className="inline-block pl-2 italic">→</span>
+              {isSearching ? "Querying inventory" : "Run three options →"}
             </button>
           </div>
         </form>
@@ -194,7 +200,7 @@ export default function SearchForm({ initial, onSubmit, isSearching }: Props) {
 
 function FieldLabel({ id, label }: { id: string; label: string }) {
   return (
-    <label htmlFor={id} className="block px-5 pt-5 pb-2 mono-label">
+    <label htmlFor={id} className="block px-4 pt-4 pb-2 mono-label">
       {label}
     </label>
   );

@@ -26,8 +26,7 @@ export default function EditorialCallout({ options }: Props) {
         This route is one of the best uses of{" "}
         <em>{bestAward.currencyFrom} points</em> in 2026 — a{" "}
         <em>{cpp.toFixed(1)}¢/point</em> redemption that&apos;s roughly{" "}
-        {Math.round(cpp / 2)}× the program&apos;s baseline valuation. If you
-        can find the space, this is the trip to burn points on.
+        {Math.round(cpp / 2)}× the program&apos;s baseline valuation.
       </CalloutFrame>
     );
   }
@@ -51,9 +50,12 @@ function CalloutFrame({
   children: React.ReactNode;
 }) {
   return (
-    <div className="border-t border-b hairline-strong py-6 px-4 md:px-0 text-center">
-      <div className="mono-label text-accent mb-2">{label}</div>
-      <p className="display mx-auto max-w-[780px] text-[18px] leading-[1.5] text-ink">
+    <div
+      className="mb-4 bg-accent-soft px-4 py-4 md:px-6 md:py-5"
+      style={{ borderRadius: "14px" }}
+    >
+      <div className="mono-label text-accent mb-1.5">{label}</div>
+      <p className="text-[15px] leading-[1.5] text-ink md:text-[16px]">
         {children}
       </p>
     </div>

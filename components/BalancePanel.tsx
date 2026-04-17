@@ -34,13 +34,14 @@ function ExpirationChip({ exp }: { exp: ExpirationInfo }) {
   return (
     <span
       className={[
-        "mono-label inline-block px-2 py-[3px] border",
+        "mono-label inline-flex items-center px-2.5 py-[3px]",
         isUrgent
-          ? "bg-accent text-cream border-accent"
-          : "border-gold bg-gold/10 text-gold",
+          ? "bg-accent text-white"
+          : "bg-gold-soft text-gold",
       ].join(" ")}
+      style={{ borderRadius: "999px" }}
     >
-      Expires in {exp.days}d{isUrgent ? " · urgent" : ""}
+      {exp.days}d{isUrgent ? " · urgent" : ""}
     </span>
   );
 }
@@ -64,29 +65,32 @@ export default function BalancePanel({
   const perCurrency = totalByCurrency(selectedCardIds, balances);
 
   return (
-    <section className="border-b hairline bg-cream-deep/30">
-      <div className="mx-auto max-w-[1440px] px-6 py-14 md:px-12 md:py-20">
-        <div className="grid gap-8 md:grid-cols-12">
+    <section className="border-b hairline">
+      <div className="mx-auto max-w-[1440px] px-4 py-12 md:px-8 md:py-16">
+        <div className="grid gap-6 md:grid-cols-12 md:gap-10">
           <div className="md:col-span-4">
-            <div className="mono-label mb-4 text-accent">
-              01a · Your Balances
+            <div className="mono-label mb-3 text-accent">
+              01a · Your balances
             </div>
-            <h2 className="display text-[32px] leading-[1.05] md:text-[40px]">
+            <h2 className="display text-[26px] md:text-[34px]">
               A real <em>workspace</em>, not a guess.
             </h2>
-            <p className="mt-4 font-display text-[15px] leading-[1.5] text-ink-soft">
-              Enter what you actually have. We&apos;ll price the three options
-              against your real stash — and flag any balance about to expire.
+            <p className="mt-3 text-[14px] leading-[1.5] text-ink-soft md:text-[15px]">
+              Enter what you actually have. We&apos;ll price options against
+              your real stash and flag any balance about to expire.
             </p>
           </div>
           <div className="md:col-span-8">
-            <div className="border hairline-strong bg-paper">
-              <div className="flex flex-wrap items-center justify-between gap-4 border-b hairline px-5 py-4">
+            <div
+              className="bg-paper card-shadow border hairline-strong"
+              style={{ borderRadius: "16px" }}
+            >
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b hairline px-4 py-3.5 md:px-5 md:py-4">
                 <div className="mono-label text-ink-faint">
                   Running total · {selectedCards.length} card
                   {selectedCards.length === 1 ? "" : "s"}
                 </div>
-                <div className="font-display text-[28px] leading-[1] text-ink">
+                <div className="display text-[22px] md:text-[26px] text-ink">
                   {fmt.format(grandTotal)} pts
                 </div>
               </div>
@@ -98,18 +102,21 @@ export default function BalancePanel({
                   return (
                     <li
                       key={card.id}
-                      className="flex flex-wrap items-center gap-4 border-b last:border-b-0 hairline px-5 py-4"
+                      className="grid grid-cols-[1fr_auto] gap-3 border-b last:border-b-0 hairline px-4 py-3 md:grid-cols-[1fr_auto_auto] md:px-5 md:py-4 md:gap-4 md:items-center"
                     >
-                      <div className="flex-1 min-w-[180px]">
-                        <div className="font-display text-[15px] text-ink">
+                      <div className="min-w-0">
+                        <div className="font-medium text-[14px] md:text-[15px] text-ink truncate">
                           {card.bank} {card.name}
                         </div>
-                        <div className="mono-label text-ink-faint">
-                          {card.currency} · {card.currencyName}
+                        <div className="mono-label text-ink-faint flex items-center gap-2 flex-wrap">
+                          <span>{card.currency} · {card.currencyName}</span>
+                          {exp ? <ExpirationChip exp={exp} /> : null}
                         </div>
                       </div>
-                      {exp ? <ExpirationChip exp={exp} /> : null}
-                      <div className="flex items-center gap-2">
+                      <div className="hidden md:block">
+                        {/* chip slot for alignment on desktop */}
+                      </div>
+                      <div className="flex items-center gap-2 justify-self-end">
                         <input
                           type="number"
                           inputMode="numeric"
@@ -124,13 +131,13 @@ export default function BalancePanel({
                             onChange(card.id, n);
                           }}
                           aria-label={`${card.bank} ${card.name} balance`}
-                          className="w-[130px] bg-transparent border hairline-strong px-3 py-2 text-right font-[var(--font-jetbrains)] text-ink outline-none focus:border-accent"
+                          className="w-[120px] md:w-[140px] bg-surface border hairline-strong px-3 py-1.5 text-right text-[14px] font-medium text-ink outline-none focus:border-accent"
                           style={{
                             fontFamily:
                               "var(--font-jetbrains), ui-monospace, monospace",
                           }}
                         />
-                        <span className="mono-label w-[40px] text-ink-faint">
+                        <span className="mono-label w-[36px] text-ink-faint">
                           {card.currency}
                         </span>
                       </div>
@@ -139,11 +146,12 @@ export default function BalancePanel({
                 })}
               </ul>
 
-              <div className="flex flex-wrap gap-3 border-t hairline px-5 py-4">
+              <div className="flex flex-wrap gap-2 border-t hairline px-4 py-3.5 md:px-5 md:py-4">
                 {Object.entries(perCurrency).map(([currency, total]) => (
                   <span
                     key={currency}
-                    className="mono-label border hairline-strong px-3 py-[4px]"
+                    className="mono-label bg-surface px-2.5 py-1 text-ink"
+                    style={{ borderRadius: "999px" }}
                   >
                     {currency} · {fmt.format(total)}
                   </span>

@@ -31,7 +31,7 @@ const DOT = (
     height="8"
     viewBox="0 0 8 8"
     aria-hidden="true"
-    className="mt-[6px] text-accent"
+    className="mt-[7px] text-accent shrink-0"
   >
     <circle cx="4" cy="4" r="3" fill="currentColor" />
   </svg>
@@ -71,18 +71,27 @@ function AvailabilityBadge({
   const label = formatSeatsLeft(option.availability);
   if (status === "open")
     return (
-      <span className="mono-label inline-block border border-accent bg-accent px-2 py-[3px] text-cream">
+      <span
+        className="mono-label inline-flex items-center bg-accent px-2.5 py-[3px] text-white"
+        style={{ borderRadius: "999px" }}
+      >
         {label}
       </span>
     );
   if (status === "waitlist")
     return (
-      <span className="mono-label inline-block border border-gold bg-gold/10 px-2 py-[3px] text-gold">
+      <span
+        className="mono-label inline-flex items-center bg-gold-soft px-2.5 py-[3px] text-gold"
+        style={{ borderRadius: "999px" }}
+      >
         {label}
       </span>
     );
   return (
-    <span className="mono-label inline-block border hairline-strong px-2 py-[3px] text-ink-faint">
+    <span
+      className="mono-label inline-flex items-center bg-surface px-2.5 py-[3px] text-ink-faint"
+      style={{ borderRadius: "999px" }}
+    >
       {label}
     </span>
   );
@@ -100,8 +109,10 @@ function FlightStrip({
   isSearching: boolean;
 }) {
   return (
-    <div className="flex items-center gap-4 border-b hairline pb-6">
-      <span className="font-display text-[28px] text-ink">{origin}</span>
+    <div className="flex items-center gap-3 md:gap-4 border-b hairline pb-5">
+      <span className="display text-[22px] md:text-[26px] text-ink">
+        {origin}
+      </span>
       <div className="flex-1 flex flex-col items-center gap-1">
         <svg
           viewBox="0 0 120 14"
@@ -126,7 +137,9 @@ function FlightStrip({
         </svg>
         <span className="mono-label">{duration}</span>
       </div>
-      <span className="font-display text-[28px] text-ink">{destination}</span>
+      <span className="display text-[22px] md:text-[26px] text-ink">
+        {destination}
+      </span>
     </div>
   );
 }
@@ -148,16 +161,20 @@ function GoalTracker({
     .map((id) => CARD_BY_ID[id])
     .find((c) => c && c.currency === currency);
   const sourceLabel = sourceCard
-    ? `Transfer ${fmt.format(short)} ${currency} from ${sourceCard.bank} ${sourceCard.name} →`
-    : `Acquire ${fmt.format(short)} ${currency} to close the gap →`;
+    ? `Transfer ${fmt.format(short)} ${currency} from ${sourceCard.bank} ${sourceCard.name}`
+    : `Acquire ${fmt.format(short)} ${currency} to close the gap`;
 
   return (
-    <div className="mt-auto flex flex-col gap-3 border hairline-strong px-4 py-4">
+    <div
+      className="mt-auto flex flex-col gap-3 bg-accent-soft px-4 py-4"
+      style={{ borderRadius: "12px" }}
+    >
       <div className="mono-label text-accent">
-        You&apos;re {fmt.format(short)} points short
+        {fmt.format(short)} points short
       </div>
       <div
-        className="relative h-[3px] w-full bg-rule overflow-hidden"
+        className="relative h-[4px] w-full bg-white overflow-hidden"
+        style={{ borderRadius: "999px" }}
         role="progressbar"
         aria-valuemin={0}
         aria-valuemax={needed}
@@ -165,10 +182,12 @@ function GoalTracker({
       >
         <div
           className="absolute inset-y-0 left-0 bg-accent"
-          style={{ width: `${pct}%` }}
+          style={{ width: `${pct}%`, borderRadius: "999px" }}
         />
       </div>
-      <div className="mono-label text-ink-soft">{sourceLabel}</div>
+      <div className="text-[13px] text-ink-soft leading-[1.4]">
+        {sourceLabel}
+      </div>
     </div>
   );
 }
@@ -181,10 +200,10 @@ function AlertMeButton() {
       onClick={() => setWatching((w) => !w)}
       aria-pressed={watching}
       className={[
-        "mt-auto mono-label px-5 py-3 text-center transition-colors",
+        "mt-auto mono-label px-5 py-3 text-center transition-colors font-medium",
         watching
-          ? "bg-accent text-cream border border-accent"
-          : "border hairline-strong text-ink hover:bg-ink hover:text-cream",
+          ? "bg-accent text-white"
+          : "bg-surface text-ink border hairline-strong hover:bg-ink hover:text-white",
       ].join(" ")}
     >
       {BELL}
@@ -266,15 +285,15 @@ export default function OptionCard({
         href={bookingUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="mt-auto mono-label border hairline-strong px-5 py-3 text-ink text-center transition-colors hover:bg-ink hover:text-cream"
+        className="mt-auto mono-label bg-accent text-white px-5 py-3 text-center transition-colors hover:bg-accent-deep font-medium"
       >
         {bookLabel}
-        <span className="inline-block pl-2 italic">↗</span>
+        <span className="inline-block pl-1.5">↗</span>
       </a>
     );
   } else {
     action = (
-      <span className="mt-auto mono-label border hairline px-5 py-3 text-ink-faint text-center cursor-not-allowed">
+      <span className="mt-auto mono-label bg-surface px-5 py-3 text-ink-faint text-center cursor-not-allowed">
         {bookLabel}
       </span>
     );
@@ -285,7 +304,7 @@ export default function OptionCard({
       className={[
         "fade-up",
         delayClass,
-        "flex flex-col gap-6 px-6 py-8 md:min-h-[640px]",
+        "flex flex-col gap-5 px-5 py-6 md:px-6 md:py-8 md:min-h-[640px]",
         isMuted ? "opacity-75" : "",
       ].join(" ")}
     >
@@ -299,7 +318,12 @@ export default function OptionCard({
           {option.rank}
         </span>
         {option.isBest ? (
-          <span className="mono-label text-accent">Our Pick</span>
+          <span
+            className="mono-label bg-accent-soft text-accent px-2.5 py-[3px]"
+            style={{ borderRadius: "999px" }}
+          >
+            Our pick
+          </span>
         ) : null}
       </div>
 
@@ -311,8 +335,13 @@ export default function OptionCard({
       />
 
       <div className="flex flex-col gap-2">
-        <div className="flex flex-wrap items-center gap-3">
-          <span className="mono-label text-accent">{option.cabinLabel}</span>
+        <div className="flex flex-wrap items-center gap-2">
+          <span
+            className="mono-label bg-accent-soft text-accent px-2.5 py-[3px]"
+            style={{ borderRadius: "999px" }}
+          >
+            {option.cabinLabel}
+          </span>
           <AvailabilityBadge option={option} />
         </div>
         <div
@@ -323,7 +352,7 @@ export default function OptionCard({
           onBlur={() => setShowMap(false)}
           tabIndex={0}
         >
-          <h3 className="font-display text-[24px] leading-[1.15] text-ink cursor-help border-b border-dotted border-rule-strong">
+          <h3 className="display text-[20px] md:text-[22px] text-ink cursor-help border-b border-dotted border-rule-strong">
             {option.airline}
           </h3>
           {showMap ? (
@@ -333,29 +362,28 @@ export default function OptionCard({
             />
           ) : null}
         </div>
-        <span className="mono-label">{option.tag}</span>
+        <span className="text-[13px] text-ink-soft">{option.tag}</span>
         <span className="mono-label text-ink-faint">
-          On this route · Avg {stats.avgSaverSeats} saver seats · Typically
-          released {stats.typicallyReleased} days out · {stats.reliabilityLabel}
+          Avg {stats.avgSaverSeats} saver seats · Released {stats.typicallyReleased}d out · {stats.reliabilityLabel}
         </span>
       </div>
 
       <div>
-        <div className="font-display text-[72px] leading-[0.98] tracking-tight text-ink md:text-[84px]">
+        <div className="display text-[42px] leading-[1] tracking-tight text-ink md:text-[52px] lg:text-[60px]">
           {option.headlineNum}
         </div>
-        <div className="mono-label mt-2">{option.headlineUnit}</div>
+        <div className="mono-label mt-1.5">{option.headlineUnit}</div>
       </div>
 
-      <p className="font-display text-[15px] leading-[1.55] text-ink-soft">
+      <p className="text-[14px] leading-[1.55] text-ink-soft md:text-[15px]">
         {option.detail}
       </p>
 
-      <ul className="flex flex-col gap-3 border-t hairline pt-5">
+      <ul className="flex flex-col gap-2.5 border-t hairline pt-4">
         {option.breakdown.map((row, i) => (
           <li key={i} className="flex items-start gap-3">
             {DOT}
-            <span className="flex-1 font-display text-[14px] leading-[1.4] text-ink-soft">
+            <span className="flex-1 text-[13px] leading-[1.4] text-ink-soft">
               {row.desc === "Cents per point" ? (
                 <span title="Cents per point — your cash-to-award efficiency. Anything above 2 cpp is generally worth the transfer.">
                   {row.desc}
@@ -364,15 +392,14 @@ export default function OptionCard({
                 row.desc
               )}
             </span>
-            <span className="mono-label text-ink">{row.val}</span>
+            <span className="mono-label text-ink shrink-0">{row.val}</span>
           </li>
         ))}
         {usesExpiring ? (
-          <li className="flex items-start gap-3">
-            <span className="mt-[6px] inline-block h-[8px] w-[8px] bg-accent" />
-            <span className="flex-1 font-display text-[14px] leading-[1.4] text-accent-deep">
-              Uses expiring points — book before your soonest expiration to
-              avoid losing balance.
+          <li className="flex items-start gap-3 bg-accent-soft rounded-lg px-3 py-2">
+            <span className="mt-[6px] inline-block h-[6px] w-[6px] bg-accent rounded-full shrink-0" />
+            <span className="flex-1 text-[13px] leading-[1.4] text-accent-deep">
+              Uses expiring points — book before your soonest expiration.
             </span>
           </li>
         ) : null}

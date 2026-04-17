@@ -37,25 +37,22 @@ export default function FlexStrip({
 }: Props) {
   if (!flex.length) return null;
   return (
-    <div className="border-t hairline bg-cream-deep/25">
-      <div className="mx-auto max-w-[1440px] px-6 py-10 md:px-12">
-        <div className="flex items-end justify-between gap-6 mb-6">
+    <div className="border-t hairline bg-surface">
+      <div className="mx-auto max-w-[1440px] px-4 py-8 md:px-8 md:py-10">
+        <div className="flex items-end justify-between gap-4 mb-5">
           <div>
-            <div className="mono-label text-accent">
-              Flexible Dates · ±3 Days
-            </div>
-            <p className="mt-2 font-display text-[18px] text-ink-soft">
-              Award space rarely lines up with your first-choice date. A
-              terracotta dot means saver seats are open; gold means waitlist;
-              faint means the chart is closed that day.
+            <div className="mono-label text-accent">Flex dates · ±3 days</div>
+            <p className="mt-1.5 text-[14px] leading-[1.5] text-ink-soft md:text-[15px] max-w-[580px]">
+              Terracotta dot = saver seats open, gold = waitlist, faint = no
+              space. Tap a day to re-center the search.
             </p>
           </div>
           <div className="mono-label hidden text-ink-faint md:block">
-            Click any day to re-run
+            Scroll / tap a day
           </div>
         </div>
 
-        <div className="grid grid-cols-7 gap-2">
+        <div className="flex gap-2 overflow-x-auto snap-x snap-mandatory -mx-1 px-1 md:grid md:grid-cols-7 md:gap-2 md:overflow-visible md:px-0 md:mx-0">
           {flex.map((day) => {
             const label = formatLabel(day.date);
             const isSelected = day.date === selectedDate;
@@ -65,25 +62,26 @@ export default function FlexStrip({
                 type="button"
                 onClick={() => onPick(day.date)}
                 disabled={isSearching || isSelected}
+                style={{ borderRadius: "12px" }}
                 className={[
-                  "flex flex-col gap-3 border px-3 py-4 text-left transition-colors",
+                  "shrink-0 w-[92px] md:w-auto flex flex-col gap-2 border px-3 py-3 text-left transition-colors snap-start",
                   isSelected
-                    ? "bg-ink text-cream border-ink"
-                    : "border-rule hover:border-ink",
+                    ? "bg-ink text-white border-ink card-shadow"
+                    : "border-rule-strong bg-paper hover:border-accent hover:-translate-y-[1px] card-shadow-hover",
                 ].join(" ")}
               >
                 <div
                   className={[
                     "mono-label",
-                    isSelected ? "text-cream/70" : "text-ink-faint",
+                    isSelected ? "text-white/70" : "text-ink-faint",
                   ].join(" ")}
                 >
                   {label.weekday}
                 </div>
                 <div
                   className={[
-                    "font-display text-[20px] leading-[1]",
-                    isSelected ? "text-cream" : "text-ink",
+                    "font-semibold text-[15px] md:text-[17px] leading-[1]",
+                    isSelected ? "text-white" : "text-ink",
                   ].join(" ")}
                 >
                   {label.day}
@@ -103,7 +101,7 @@ export default function FlexStrip({
                     <span
                       className={[
                         "mono-label",
-                        isSelected ? "text-cream/60" : "text-ink-faint",
+                        isSelected ? "text-white/60" : "text-ink-faint",
                       ].join(" ")}
                     >
                       +{day.programs.length - 4}

@@ -16,14 +16,8 @@ const ROWS: Row[] = [
     capability: "Fare-class codes and seat maps",
     tool: "ExpertFlyer ($100/yr)",
   },
-  {
-    capability: "Points balance tracking across programs",
-    tool: "AwardWallet",
-  },
-  {
-    capability: "Expiration warnings on your balances",
-    tool: "AwardWallet Plus",
-  },
+  { capability: "Points balance tracking across programs", tool: "AwardWallet" },
+  { capability: "Expiration warnings on your balances", tool: "AwardWallet Plus" },
   {
     capability: "Unicorn finder (ANA First, Qatar QSuites)",
     tool: "Seats.aero Pro only",
@@ -40,10 +34,7 @@ const ROWS: Row[] = [
     capability: "Transfer bonus tracking",
     tool: "The Points Guy, email lists",
   },
-  {
-    capability: "Destination-first discovery",
-    tool: "Roame",
-  },
+  { capability: "Destination-first discovery", tool: "Roame" },
   {
     capability: "Cash-fare + points intelligence",
     tool: "Thrifty Traveler + TPG",
@@ -61,110 +52,75 @@ const LEDGER_ROW = {
 
 export default function ComparisonChart() {
   return (
-    <section id="comparison" className="bg-ink text-cream">
-      <div className="mx-auto max-w-[1440px] px-6 py-20 md:px-12 md:py-28">
-        <div className="mb-14 grid gap-8 md:grid-cols-12">
+    <section id="comparison" className="bg-ink text-white">
+      <div className="mx-auto max-w-[1440px] px-4 py-14 md:px-8 md:py-20">
+        <div className="mb-10 grid gap-6 md:grid-cols-12 md:gap-10 md:mb-14">
           <div className="md:col-span-7">
-            <div className="mono-label mb-6 text-accent">
-              04 · The Consolidation
+            <div className="mono-label mb-4 text-accent">
+              04 · The consolidation
             </div>
-            <h2 className="display text-[44px] leading-[1.04] text-cream md:text-[64px]">
+            <h2 className="display text-[30px] leading-[1.05] text-white md:text-[48px] lg:text-[56px]">
               What you used to need <em>twelve tools</em> for — now in one.
             </h2>
           </div>
-          <div className="md:col-span-4 md:col-start-9 md:pt-6">
-            <p className="font-display text-[16px] leading-[1.55] text-cream/75">
-              The honest case for this product, in a single scan. Every row is
-              a capability someone on your team already pays for separately.
-              The last row is the one nobody else ships.
+          <div className="md:col-span-4 md:col-start-9 md:pt-4">
+            <p className="text-[15px] leading-[1.5] text-white/75 md:text-[16px]">
+              Every row below is a capability someone on your team already pays
+              for separately. The last row is the one nobody else ships.
             </p>
           </div>
         </div>
 
-        <div className="grid grid-cols-[1.2fr_auto] md:grid-cols-[1.3fr_1fr_auto] gap-x-6 gap-y-0">
-          <div className="hidden md:block py-4 mono-label text-cream/60">
-            Capability
+        <div
+          className="bg-white/[0.03] border border-white/10 overflow-hidden"
+          style={{ borderRadius: "16px" }}
+        >
+          <div className="hidden md:grid grid-cols-[1.3fr_1fr_auto] gap-6 px-5 py-3 border-b border-white/10">
+            <span className="mono-label text-white/50">Capability</span>
+            <span className="mono-label text-white/50">
+              Tool everyone uses
+            </span>
+            <span className="mono-label text-white/50 text-right">
+              Ledger/Points
+            </span>
           </div>
-          <div className="hidden md:block py-4 mono-label text-cream/60">
-            Tool everyone uses
-          </div>
-          <div className="hidden md:block py-4 mono-label text-cream/60 text-right">
-            Ledger/Points
-          </div>
-
-          <div
-            className="col-span-full h-[1px]"
-            style={{ background: "rgba(255, 255, 255,0.2)" }}
-          />
 
           {ROWS.map((row, i) => (
-            <RowRender
+            <div
               key={i}
-              capability={row.capability}
-              tool={row.tool}
-              isFirst={i === 0}
-            />
+              className={[
+                "grid grid-cols-[1fr_auto] md:grid-cols-[1.3fr_1fr_auto] gap-3 md:gap-6 px-4 md:px-5 py-3.5 md:py-4",
+                i > 0 ? "border-t border-white/10" : "",
+              ].join(" ")}
+            >
+              <span className="text-[14px] leading-[1.35] text-white md:text-[15px]">
+                {row.capability}
+              </span>
+              <span className="hidden md:block text-[14px] text-white/50">
+                {row.tool}
+              </span>
+              <span className="mono-label text-accent justify-self-end">
+                ✓ Built in
+              </span>
+            </div>
           ))}
 
           <div
-            className="col-span-full h-[2px] mt-2"
-            style={{ background: "var(--accent)" }}
-          />
-
-          <div className="py-6">
-            <span className="font-display text-[18px] italic font-semibold text-accent md:text-[22px]">
+            className="grid grid-cols-[1fr_auto] md:grid-cols-[1.3fr_1fr_auto] gap-3 md:gap-6 px-4 md:px-5 py-4 md:py-5 bg-accent/15 border-t-2"
+            style={{ borderColor: "var(--accent)" }}
+          >
+            <span className="font-semibold text-[15px] md:text-[17px] text-accent">
               {LEDGER_ROW.capability}
             </span>
-          </div>
-          <div className="hidden md:block py-6">
-            <span
-              className="font-display text-[15px]"
-              style={{ color: "rgba(255, 255, 255, 0.5)" }}
-            >
+            <span className="hidden md:block text-[14px] text-white/50">
               {LEDGER_ROW.tool}
             </span>
-          </div>
-          <div className="py-6 text-right">
-            <span className="font-display text-[18px] italic font-semibold text-accent">
+            <span className="mono-label font-semibold text-accent justify-self-end">
               ✓ Our edge
             </span>
           </div>
         </div>
       </div>
     </section>
-  );
-}
-
-function RowRender({
-  capability,
-  tool,
-  isFirst,
-}: {
-  capability: string;
-  tool: string;
-  isFirst: boolean;
-}) {
-  const borderStyle = isFirst
-    ? undefined
-    : { borderTop: "1px solid rgba(255, 255, 255,0.14)" };
-  return (
-    <>
-      <div className="py-4" style={borderStyle}>
-        <span className="font-display text-[15px] leading-[1.35] text-cream md:text-[16px]">
-          {capability}
-        </span>
-      </div>
-      <div className="hidden md:block py-4" style={borderStyle}>
-        <span
-          className="font-display text-[14px]"
-          style={{ color: "rgba(255, 255, 255, 0.5)" }}
-        >
-          {tool}
-        </span>
-      </div>
-      <div className="py-4 text-right" style={borderStyle}>
-        <span className="mono-label text-accent">✓ Built in</span>
-      </div>
-    </>
   );
 }

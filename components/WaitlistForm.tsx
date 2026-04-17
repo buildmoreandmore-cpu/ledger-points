@@ -40,15 +40,15 @@ export default function WaitlistForm() {
   }
 
   return (
-    <section id="waitlist" className="border-b hairline bg-cream-deep/40">
-      <div className="mx-auto max-w-[1440px] px-6 py-20 md:px-12 md:py-28">
-        <div className="grid gap-10 md:grid-cols-12">
+    <section id="waitlist" className="border-b hairline bg-surface">
+      <div className="mx-auto max-w-[1440px] px-4 py-14 md:px-8 md:py-20">
+        <div className="grid gap-6 md:grid-cols-12 md:gap-10">
           <div className="md:col-span-6">
-            <div className="mono-label mb-6 text-accent">05 · The Invitation</div>
-            <h2 className="display text-[44px] leading-[1.04] md:text-[64px]">
+            <div className="mono-label mb-3 text-accent">07 · The invitation</div>
+            <h2 className="display text-[30px] leading-[1.05] md:text-[48px]">
               Join the <em>first hundred</em> seats.
             </h2>
-            <p className="mt-6 font-display text-[18px] leading-[1.55] text-ink-soft">
+            <p className="mt-4 text-[15px] leading-[1.55] text-ink-soft md:text-[17px]">
               We&apos;re opening the private beta to a hundred readers who
               already know the difference between Avios and LifeMiles. Leave
               your email and we&apos;ll send one note when the gate lifts — no
@@ -59,15 +59,16 @@ export default function WaitlistForm() {
           <div className="md:col-span-6 md:col-start-7">
             <form
               onSubmit={handleSubmit}
-              className="border hairline-strong bg-paper"
+              className="bg-paper card-shadow border hairline-strong overflow-hidden"
+              style={{ borderRadius: "16px" }}
             >
-              <div className="grid grid-cols-1 md:grid-cols-[1fr_auto]">
-                <div className="px-5 pt-5 pb-3 border-b md:border-b-0 md:border-r hairline">
+              <div className="flex flex-col md:flex-row md:items-stretch">
+                <div className="flex-1 px-4 pt-4 pb-3 border-b md:border-b-0 md:border-r hairline">
                   <label
                     htmlFor="waitlist-email"
-                    className="block mono-label mb-2"
+                    className="block mono-label mb-1.5"
                   >
-                    Email Address
+                    Email address
                   </label>
                   <input
                     id="waitlist-email"
@@ -77,21 +78,22 @@ export default function WaitlistForm() {
                     placeholder="you@domain.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full bg-transparent pb-2 font-display text-[20px] tracking-tight text-ink outline-none placeholder:text-ink-faint"
+                    className="w-full bg-transparent font-medium text-[17px] md:text-[18px] text-ink outline-none placeholder:text-ink-faint"
+                    style={{ borderRadius: 0 }}
                   />
                 </div>
                 <button
                   type="submit"
                   disabled={state === "submitting"}
                   className={[
-                    "mono-label px-8 py-6 transition-colors",
+                    "mono-label px-6 py-4 md:py-0 transition-colors font-medium",
                     state === "submitting"
-                      ? "bg-ink-faint text-cream"
-                      : "bg-ink text-cream hover:bg-accent-deep",
+                      ? "bg-ink-faint text-white"
+                      : "bg-accent text-white hover:bg-accent-deep",
                   ].join(" ")}
+                  style={{ borderRadius: 0 }}
                 >
-                  {state === "submitting" ? "Sending" : "Send Me the Invite"}
-                  <span className="inline-block pl-2 italic">→</span>
+                  {state === "submitting" ? "Sending" : "Send me the invite →"}
                 </button>
               </div>
             </form>
@@ -99,7 +101,7 @@ export default function WaitlistForm() {
             {message ? (
               <p
                 className={[
-                  "mt-4 font-display text-[15px]",
+                  "mt-3 text-[14px] md:text-[15px]",
                   state === "error" ? "text-accent-deep" : "text-ink-soft",
                 ].join(" ")}
                 role="status"
@@ -107,7 +109,7 @@ export default function WaitlistForm() {
                 {message}
               </p>
             ) : (
-              <p className="mt-4 mono-label">
+              <p className="mt-3 mono-label">
                 We only write when something ships. One email, maybe two.
               </p>
             )}

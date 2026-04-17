@@ -1,17 +1,20 @@
 @import "tailwindcss";
 
 :root {
-  --ink: #0a0a0a;
-  --ink-soft: #525252;
-  --ink-faint: #a3a3a3;
+  --ink: #0f172a;
+  --ink-soft: #475569;
+  --ink-faint: #94a3b8;
   --cream: #ffffff;
-  --cream-deep: #f5f5f5;
-  --paper: #fafafa;
+  --cream-deep: #ffffff;
+  --paper: #ffffff;
+  --surface: #f8fafc;
   --accent: #5e6ad2;
   --accent-deep: #4a52a6;
+  --accent-soft: #eef0fb;
   --gold: #d97706;
-  --rule: rgba(0, 0, 0, 0.08);
-  --rule-strong: rgba(0, 0, 0, 0.14);
+  --gold-soft: #fef3c7;
+  --rule: rgba(15, 23, 42, 0.08);
+  --rule-strong: rgba(15, 23, 42, 0.14);
 }
 
 @theme inline {
@@ -21,9 +24,12 @@
   --color-cream: var(--cream);
   --color-cream-deep: var(--cream-deep);
   --color-paper: var(--paper);
+  --color-surface: var(--surface);
   --color-accent: var(--accent);
   --color-accent-deep: var(--accent-deep);
+  --color-accent-soft: var(--accent-soft);
   --color-gold: var(--gold);
+  --color-gold-soft: var(--gold-soft);
   --color-rule: var(--rule);
   --color-rule-strong: var(--rule-strong);
 
@@ -41,47 +47,39 @@ body {
 body {
   font-family: var(--font-inter-tight), system-ui, sans-serif;
   font-weight: 400;
-  letter-spacing: -0.005em;
+  letter-spacing: -0.01em;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
 ::selection {
   background: var(--accent);
-  color: var(--paper);
-}
-
-.noise-overlay {
-  display: none;
+  color: #ffffff;
 }
 
 .mono-label {
   font-family: var(--font-jetbrains), ui-monospace, monospace;
   font-size: 11px;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   font-weight: 500;
   color: var(--ink-faint);
 }
 
 .display {
   font-family: var(--font-inter-tight), system-ui, sans-serif;
-  font-weight: 500;
-  letter-spacing: -0.03em;
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  line-height: 1.05;
 }
 
 .display em,
-.display i {
-  font-style: normal;
-  color: var(--accent);
-  font-weight: 600;
-}
-
+.display i,
 .font-display em,
 .font-display i {
   font-style: normal;
   color: var(--accent);
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .hairline {
@@ -92,10 +90,57 @@ body {
   border-color: var(--rule-strong);
 }
 
+/* Rounded defaults for buttons + inputs — Soft+friendly brief */
+button,
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="date"],
+select,
+textarea,
+a.btn {
+  border-radius: 10px;
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+a:focus-visible,
+[role="button"]:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Min tap target on mobile for any interactive element */
+@media (max-width: 767px) {
+  button,
+  a[class*="mono-label"],
+  [role="switch"],
+  select,
+  input {
+    min-height: 44px;
+  }
+}
+
+.card-shadow {
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04),
+    0 2px 8px rgba(15, 23, 42, 0.04);
+}
+
+.card-shadow-hover:hover {
+  box-shadow: 0 2px 4px rgba(15, 23, 42, 0.06),
+    0 8px 20px rgba(15, 23, 42, 0.06);
+}
+
+.noise-overlay {
+  display: none;
+}
+
 @keyframes fadeUp {
   from {
     opacity: 0;
-    transform: translateY(14px);
+    transform: translateY(10px);
   }
   to {
     opacity: 1;
@@ -104,7 +149,7 @@ body {
 }
 
 .fade-up {
-  animation: fadeUp 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation: fadeUp 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 
 .fade-up-delay-1 {
@@ -120,7 +165,7 @@ body {
 @keyframes chipIn {
   from {
     opacity: 0;
-    transform: translateY(6px);
+    transform: translateY(4px);
   }
   to {
     opacity: 1;
@@ -129,7 +174,7 @@ body {
 }
 
 .chip-in {
-  animation: chipIn 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation: chipIn 0.32s cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 
 @keyframes pulseDot {
@@ -159,11 +204,12 @@ body {
   animation: marchDash 1.4s linear infinite;
 }
 
-button:focus-visible,
-input:focus-visible,
-select:focus-visible,
-a:focus-visible,
-[role="button"]:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 3px;
+/* Hide default number-input spinners for a cleaner look */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
 }

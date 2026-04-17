@@ -57,14 +57,18 @@ export default function ExploreMode({
   }
 
   return (
-    <div className="mt-10 border hairline-strong bg-cream/50">
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-0">
-        <div className="md:col-span-3 border-b md:border-b-0 md:border-r hairline px-5 py-4">
-          <div className="mono-label mb-2">Origin</div>
+    <div
+      className="card-shadow border hairline-strong bg-paper overflow-hidden"
+      style={{ borderRadius: "16px" }}
+    >
+      <div className="grid grid-cols-2 md:grid-cols-[1fr_1.4fr_1fr_auto]">
+        <div className="border-b md:border-b-0 md:border-r hairline">
+          <label className="block mono-label px-4 pt-4 pb-1.5">Origin</label>
           <select
             value={origin}
             onChange={(e) => setOrigin(e.target.value)}
-            className="w-full bg-transparent font-display text-[22px] tracking-tight text-ink outline-none"
+            className="w-full bg-transparent px-4 pb-4 font-medium text-[18px] md:text-[20px] text-ink outline-none"
+            style={{ borderRadius: 0 }}
           >
             {ORIGINS.map((a) => (
               <option key={a} value={a}>
@@ -74,12 +78,13 @@ export default function ExploreMode({
           </select>
         </div>
 
-        <div className="md:col-span-4 border-b md:border-b-0 md:border-r hairline px-5 py-4">
-          <div className="mono-label mb-2">Region</div>
+        <div className="border-b md:border-b-0 md:border-r hairline border-l md:border-l-0">
+          <label className="block mono-label px-4 pt-4 pb-1.5">Region</label>
           <select
             value={region}
             onChange={(e) => setRegion(e.target.value as Region)}
-            className="w-full bg-transparent font-display text-[22px] tracking-tight text-ink outline-none"
+            className="w-full bg-transparent px-4 pb-4 font-medium text-[18px] md:text-[20px] text-ink outline-none"
+            style={{ borderRadius: 0 }}
           >
             {REGIONS.map((r) => (
               <option key={r} value={r}>
@@ -89,32 +94,33 @@ export default function ExploreMode({
           </select>
         </div>
 
-        <div className="md:col-span-3 border-b md:border-b-0 md:border-r hairline px-5 py-4">
-          <div className="mono-label mb-2">Rank by</div>
+        <div className="md:border-r hairline">
+          <label className="block mono-label px-4 pt-4 pb-1.5">Rank by</label>
           <select
             value={rankBy}
             onChange={(e) => setRankBy(e.target.value as "points" | "cpp")}
-            className="w-full bg-transparent font-display text-[18px] tracking-tight text-ink outline-none"
+            className="w-full bg-transparent px-4 pb-4 text-[15px] md:text-[16px] text-ink outline-none"
+            style={{ borderRadius: 0 }}
           >
             <option value="cpp">Highest cpp</option>
             <option value="points">Lowest points</option>
           </select>
         </div>
 
-        <div className="md:col-span-2">
+        <div className="border-l md:border-l-0 col-span-2 md:col-span-1">
           <button
             type="button"
             onClick={run}
             disabled={isPending}
             className={[
-              "mono-label w-full h-full px-5 py-4 transition-colors",
+              "mono-label w-full h-full px-5 py-4 transition-colors font-medium",
               isPending
-                ? "bg-ink-faint text-cream"
-                : "bg-ink text-cream hover:bg-accent-deep",
+                ? "bg-ink-faint text-white"
+                : "bg-accent text-white hover:bg-accent-deep",
             ].join(" ")}
+            style={{ borderRadius: 0 }}
           >
-            {isPending ? "Scanning" : "Explore"}
-            <span className="inline-block pl-2 italic">→</span>
+            {isPending ? "Scanning" : "Explore →"}
           </button>
         </div>
       </div>
@@ -127,10 +133,10 @@ export default function ExploreMode({
                 <li
                   key={r.destination}
                   className={[
-                    "flex flex-col gap-3 border-rule p-5",
-                    i > 0 ? "border-t md:border-t-0" : "",
-                    i % 3 !== 0 ? "md:border-l" : "",
-                    i >= 3 ? "md:border-t" : "",
+                    "flex flex-col gap-2.5 p-4 md:p-5",
+                    i > 0 ? "border-t md:border-t-0 hairline" : "",
+                    i % 3 !== 0 ? "md:border-l hairline" : "",
+                    i >= 3 ? "md:border-t hairline" : "",
                   ].join(" ")}
                 >
                   <div className="flex items-start justify-between gap-3">
@@ -138,7 +144,7 @@ export default function ExploreMode({
                       <div className="mono-label text-accent">
                         {r.destination} · {r.destinationCity}
                       </div>
-                      <div className="font-display text-[22px] leading-[1.15] text-ink">
+                      <div className="font-semibold text-[17px] md:text-[18px] leading-[1.25] text-ink">
                         {r.bestProgram ?? "No transfer path"}
                       </div>
                     </div>
@@ -146,7 +152,7 @@ export default function ExploreMode({
                   </div>
 
                   <div>
-                    <span className="font-display text-[32px] leading-[1] text-ink">
+                    <span className="display text-[26px] md:text-[30px] leading-[1] text-ink">
                       {r.bestPoints ? fmt.format(r.bestPoints) : "—"}
                     </span>
                     <span className="mono-label ml-2 text-ink-faint">
@@ -161,16 +167,15 @@ export default function ExploreMode({
                   <button
                     type="button"
                     onClick={() => onPickDestination(r.destination)}
-                    className="mt-auto mono-label border hairline-strong px-4 py-2 text-ink transition-colors hover:bg-ink hover:text-cream"
+                    className="mt-auto mono-label bg-accent text-white px-4 py-2.5 transition-colors hover:bg-accent-deep font-medium"
                   >
-                    Search this route
-                    <span className="inline-block pl-2 italic">→</span>
+                    Search this route →
                   </button>
                 </li>
               ))}
             </ul>
           ) : (
-            <div className="px-5 py-10 font-display text-[16px] text-ink-soft">
+            <div className="px-4 md:px-5 py-8 text-[15px] text-ink-soft">
               No destinations in this region match your current cards yet. Try
               another region, or add a card that transfers to Star Alliance or
               SkyTeam partners.
@@ -187,20 +192,22 @@ function AvailabilityPill({
 }: {
   status: "open" | "waitlist" | "none";
 }) {
+  const base = "mono-label inline-flex items-center px-2.5 py-[3px]";
+  const style = { borderRadius: "999px" };
   if (status === "open")
     return (
-      <span className="mono-label inline-block border border-accent bg-accent px-2 py-[3px] text-cream">
+      <span className={`${base} bg-accent text-white`} style={style}>
         Open
       </span>
     );
   if (status === "waitlist")
     return (
-      <span className="mono-label inline-block border border-gold bg-gold/10 px-2 py-[3px] text-gold">
+      <span className={`${base} bg-gold-soft text-gold`} style={style}>
         Waitlist
       </span>
     );
   return (
-    <span className="mono-label inline-block border hairline-strong px-2 py-[3px] text-ink-faint">
+    <span className={`${base} bg-surface text-ink-faint`} style={style}>
       Closed
     </span>
   );

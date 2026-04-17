@@ -248,29 +248,34 @@ export default function Home() {
       />
 
       <section id="search" className="border-b hairline">
-        <div className="mx-auto max-w-[1440px] px-6 pt-20 md:px-12 md:pt-24">
-          <div className="mb-6 inline-flex border hairline-strong">
+        <div className="mx-auto max-w-[1440px] px-4 pt-14 md:px-8 md:pt-20">
+          <div
+            className="mb-6 inline-flex bg-surface p-1 gap-1"
+            style={{ borderRadius: "12px" }}
+          >
             <button
               type="button"
               onClick={() => setMode("specific")}
               className={[
-                "mono-label px-5 py-2 transition-colors",
+                "mono-label px-4 py-2 transition-colors font-medium",
                 mode === "specific"
-                  ? "bg-ink text-cream"
-                  : "bg-transparent text-ink hover:bg-cream",
+                  ? "bg-paper text-ink card-shadow"
+                  : "bg-transparent text-ink-faint hover:text-ink",
               ].join(" ")}
+              style={{ borderRadius: "8px" }}
             >
-              Search a specific flight
+              Search a flight
             </button>
             <button
               type="button"
               onClick={() => setMode("explore")}
               className={[
-                "mono-label px-5 py-2 border-l hairline-strong transition-colors",
+                "mono-label px-4 py-2 transition-colors font-medium",
                 mode === "explore"
-                  ? "bg-ink text-cream"
-                  : "bg-transparent text-ink hover:bg-cream",
+                  ? "bg-paper text-ink card-shadow"
+                  : "bg-transparent text-ink-faint hover:text-ink",
               ].join(" ")}
+              style={{ borderRadius: "8px" }}
             >
               Explore destinations
             </button>
@@ -284,21 +289,21 @@ export default function Home() {
             isSearching={status === "searching"}
           />
         ) : (
-          <div className="mx-auto max-w-[1440px] px-6 pb-20 md:px-12 md:pb-24">
-            <div className="grid gap-8 md:grid-cols-12 mb-6">
+          <div className="mx-auto max-w-[1440px] px-4 pb-14 md:px-8 md:pb-20">
+            <div className="grid gap-6 md:grid-cols-12 md:gap-10 mb-6">
               <div className="md:col-span-6">
-                <div className="mono-label mb-4 text-accent">
+                <div className="mono-label mb-3 text-accent">
                   02b · Destination-first
                 </div>
-                <h2 className="display text-[40px] leading-[1.05] md:text-[56px]">
+                <h2 className="display text-[28px] md:text-[40px]">
                   Let the <em>cards pick</em> the city.
                 </h2>
               </div>
-              <div className="md:col-span-5 md:col-start-8">
-                <p className="font-display text-[16px] leading-[1.55] text-ink-soft">
+              <div className="md:col-span-5 md:col-start-8 md:pt-4">
+                <p className="text-[15px] leading-[1.55] text-ink-soft md:text-[16px]">
                   Give us a region. We&apos;ll scan every route you can
-                  actually redeem on with the cards you hold, ranked by either
-                  lowest points or highest cpp.
+                  actually redeem with the cards you hold, ranked by lowest
+                  points or highest cpp.
                 </p>
               </div>
             </div>
@@ -340,17 +345,16 @@ export default function Home() {
 function EmptyResultsPlaceholder() {
   return (
     <section className="border-b hairline">
-      <div className="mx-auto max-w-[1440px] px-6 py-20 md:px-12 md:py-28">
+      <div className="mx-auto max-w-[1440px] px-4 py-14 md:px-8 md:py-20">
         <div className="mono-label text-accent">
-          03 · Three Booking Options
+          03 · Three booking options
         </div>
-        <h2 className="display mt-4 text-[44px] leading-[1.04] md:text-[64px] text-ink-faint">
+        <h2 className="display mt-3 text-[28px] leading-[1.05] md:text-[44px] text-ink-faint">
           Awaiting <em>your wallet</em>, your flight, your question.
         </h2>
-        <p className="mt-6 max-w-[680px] font-display text-[18px] leading-[1.55] text-ink-soft">
-          Pick the cards you carry up above, edit your balances, then run a
-          search. Or pick any unicorn from the live strip at the top to
-          pre-fill the form.
+        <p className="mt-4 max-w-[640px] text-[15px] leading-[1.55] text-ink-soft md:text-[17px]">
+          Pick the cards you carry above, edit your balances, then run a
+          search. Or tap a unicorn from the live strip at the top to pre-fill.
         </p>
       </div>
     </section>

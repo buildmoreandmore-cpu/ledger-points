@@ -22,24 +22,21 @@ export default function TransferBonusBanner({ options }: Props) {
 
   return (
     <div
-      className="mb-6 border-l-[3px] bg-accent/5 px-5 py-4 flex flex-wrap items-baseline gap-3"
-      style={{ borderLeftColor: "var(--accent)" }}
+      className="mb-4 bg-accent-soft px-4 py-3 md:px-5 md:py-4 flex flex-wrap items-baseline gap-2 md:gap-3"
+      style={{ borderRadius: "12px" }}
     >
-      <span className="mono-label text-accent">
-        Limited · {bonusPct}% transfer bonus
+      <span
+        className="mono-label bg-accent text-white px-2.5 py-1"
+        style={{ borderRadius: "999px" }}
+      >
+        {bonusPct}% bonus
       </span>
-      <p className="flex-1 font-display text-[15px] leading-[1.45] text-ink">
+      <p className="flex-1 text-[14px] leading-[1.45] text-ink md:text-[15px]">
         {hit.bonus.displayName} until{" "}
         <span className="mono-label text-ink-faint">{hit.bonus.until}</span>.
-        Move points now — your{" "}
-        <em className="italic">
-          {fmt.format(hit.rawPoints)} {hit.programKey.split(" ")[0]}
-        </em>{" "}
-        redemption could cost only{" "}
-        <em className="italic not-italic font-semibold">
-          {fmt.format(hit.effectivePoints)} {hit.bonus.from}
-        </em>{" "}
-        after the bonus.
+        Your <em>{fmt.format(hit.rawPoints)}</em> redemption could cost{" "}
+        <em>{fmt.format(hit.effectivePoints)} {hit.bonus.from}</em> after the
+        bonus.
       </p>
     </div>
   );

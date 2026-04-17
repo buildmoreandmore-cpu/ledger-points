@@ -58,13 +58,13 @@ export default function ResultsGrid({
       aria-live="polite"
       aria-busy={status === "searching"}
     >
-      <div className="mx-auto max-w-[1440px] px-6 pt-20 md:px-12 md:pt-28">
-        <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+      <div className="mx-auto max-w-[1440px] px-4 pt-14 md:px-8 md:pt-20">
+        <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between mb-6">
           <div>
             <div className="mono-label text-accent">
-              03 · Three Booking Options
+              03 · Three booking options
             </div>
-            <h2 className="display mt-4 text-[44px] leading-[1.04] md:text-[56px]">
+            <h2 className="display mt-3 text-[28px] md:text-[40px]">
               {route.origin} → {route.destination},{" "}
               <em>{CABIN_LABEL[route.cabin]}</em>
             </h2>
@@ -81,8 +81,11 @@ export default function ResultsGrid({
         <EditorialCallout options={options} />
       </div>
 
-      <div className="mx-auto max-w-[1440px] px-0 md:px-12">
-        <div className="grid border-t border-b hairline-strong md:grid-cols-3 md:divide-x divide-rule">
+      <div className="mx-auto max-w-[1440px] px-4 md:px-8">
+        <div
+          className="grid md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-rule border hairline-strong bg-paper overflow-hidden card-shadow"
+          style={{ borderRadius: "20px" }}
+        >
           {options.map((opt, i) => (
             <OptionCard
               key={`${opt.rank}-${i}`}
@@ -120,21 +123,24 @@ function StatusBar({
   const isSearching = status === "searching";
   const isReady = status === "ready";
   return (
-    <div className="mt-8 mb-10 border hairline-strong bg-ink text-cream">
-      <div className="flex items-center gap-4 px-6 py-4">
+    <div
+      className="mb-6 bg-ink text-white card-shadow overflow-hidden"
+      style={{ borderRadius: "12px" }}
+    >
+      <div className="flex items-center gap-3 px-4 py-3 md:px-6 md:py-3.5">
         <span
           className={[
-            "inline-block h-[8px] w-[8px] rounded-full",
+            "inline-block h-[8px] w-[8px] rounded-full shrink-0",
             isSearching ? "bg-accent pulse-dot" : "bg-[#7fa37a]",
           ].join(" ")}
           aria-hidden="true"
         />
-        <span className="mono-label text-cream">
+        <span className="mono-label text-white">
           {isSearching
-            ? "Querying transfer charts · Seats.aero · AwardFares · seven sources"
+            ? "Querying Seats.aero · AwardFares · seven sources"
             : isReady
-            ? "Three options ready · Saver-only inventory · Updated just now"
-            : "Idle · Run a search to see live options"}
+            ? "Three options · saver-only · updated just now"
+            : "Idle · run a search"}
         </span>
       </div>
     </div>
