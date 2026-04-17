@@ -20,9 +20,9 @@ export default function ConciergeBand() {
           <div className="md:col-span-4 md:col-start-9 md:pt-6">
             <div
               className="border p-6"
-              style={{ borderColor: "rgba(245,239,228,0.25)" }}
+              style={{ borderColor: "rgba(255, 255, 255,0.25)" }}
             >
-              <div className="mono-label mb-2" style={{ color: "rgba(245,239,228,0.6)" }}>
+              <div className="mono-label mb-2" style={{ color: "rgba(255, 255, 255,0.6)" }}>
                 Per passenger · all in
               </div>
               <div className="font-display text-[48px] leading-[1] text-cream">
@@ -30,7 +30,7 @@ export default function ConciergeBand() {
               </div>
               <div
                 className="mono-label mt-2"
-                style={{ color: "rgba(245,239,228,0.6)" }}
+                style={{ color: "rgba(255, 255, 255,0.6)" }}
               >
                 No subscription · cancel anytime
               </div>

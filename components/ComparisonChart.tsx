@@ -94,7 +94,7 @@ export default function ComparisonChart() {
 
           <div
             className="col-span-full h-[1px]"
-            style={{ background: "rgba(245,239,228,0.2)" }}
+            style={{ background: "rgba(255, 255, 255,0.2)" }}
           />
 
           {ROWS.map((row, i) => (
@@ -119,7 +119,7 @@ export default function ComparisonChart() {
           <div className="hidden md:block py-6">
             <span
               className="font-display text-[15px]"
-              style={{ color: "rgba(245, 239, 228, 0.5)" }}
+              style={{ color: "rgba(255, 255, 255, 0.5)" }}
             >
               {LEDGER_ROW.tool}
             </span>
@@ -146,7 +146,7 @@ function RowRender({
 }) {
   const borderStyle = isFirst
     ? undefined
-    : { borderTop: "1px solid rgba(245,239,228,0.14)" };
+    : { borderTop: "1px solid rgba(255, 255, 255,0.14)" };
   return (
     <>
       <div className="py-4" style={borderStyle}>
@@ -157,7 +157,7 @@ function RowRender({
       <div className="hidden md:block py-4" style={borderStyle}>
         <span
           className="font-display text-[14px]"
-          style={{ color: "rgba(245, 239, 228, 0.5)" }}
+          style={{ color: "rgba(255, 255, 255, 0.5)" }}
         >
           {tool}
         </span>
