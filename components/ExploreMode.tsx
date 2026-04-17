@@ -116,7 +116,7 @@ export default function ExploreMode({
               "mono-label w-full h-full px-5 py-4 transition-colors font-medium",
               isPending
                 ? "bg-ink-faint text-white"
-                : "bg-accent text-white hover:bg-accent-deep",
+                : "bg-[#0a0a0a] text-white hover:bg-[#0a0a0a]/85",
             ].join(" ")}
             style={{ borderRadius: 0 }}
           >
@@ -167,7 +167,7 @@ export default function ExploreMode({
                   <button
                     type="button"
                     onClick={() => onPickDestination(r.destination)}
-                    className="mt-auto mono-label bg-accent text-white px-4 py-2.5 transition-colors hover:bg-accent-deep font-medium"
+                    className="mt-auto mono-label bg-[#0a0a0a] text-white px-4 py-2.5 transition-opacity hover:opacity-85 font-medium"
                   >
                     Search this route →
                   </button>

@@ -202,8 +202,8 @@ function AlertMeButton() {
       className={[
         "mt-auto mono-label px-5 py-3 text-center transition-colors font-medium",
         watching
-          ? "bg-accent text-white"
-          : "bg-surface text-ink border hairline-strong hover:bg-ink hover:text-white",
+          ? "bg-[#0a0a0a] text-white"
+          : "bg-surface text-ink border hairline-strong hover:bg-[#0a0a0a] hover:text-white hover:border-[#0a0a0a]",
       ].join(" ")}
     >
       {BELL}
@@ -285,7 +285,7 @@ export default function OptionCard({
         href={bookingUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="mt-auto mono-label bg-accent text-white px-5 py-3 text-center transition-colors hover:bg-accent-deep font-medium"
+        className="mt-auto mono-label bg-[#0a0a0a] text-white px-5 py-3 text-center transition-opacity hover:opacity-85 font-medium"
       >
         {bookLabel}
         <span className="inline-block pl-1.5">↗</span>

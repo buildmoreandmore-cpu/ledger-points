@@ -51,7 +51,7 @@ export default function Masthead() {
         </nav>
         <a
           href="#search"
-          className="mono-label bg-accent text-white px-4 py-2 hover:bg-accent-deep transition-colors"
+          className="mono-label bg-[#0a0a0a] text-white px-4 py-2 hover:opacity-85 transition-opacity"
           style={{ borderRadius: "10px" }}
         >
           Start

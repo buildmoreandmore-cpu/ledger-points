@@ -186,7 +186,7 @@ export default function SearchForm({ initial, onSubmit, isSearching }: Props) {
                 "mono-label w-full md:w-auto px-6 py-3 transition-all font-medium shrink-0",
                 isSearching
                   ? "bg-ink-faint text-white cursor-wait"
-                  : "bg-accent text-white hover:bg-accent-deep",
+                  : "bg-[#0a0a0a] text-white hover:bg-[#0a0a0a]/85",
               ].join(" ")}
             >
               {isSearching ? "Querying inventory" : "Run three options →"}

@@ -39,7 +39,7 @@ export default function PointsStrategyCTA() {
               </div>
               <a
                 href="mailto:hello@ledger-points.com?subject=Points+Strategy+Call"
-                className="mt-5 mono-label inline-flex w-full justify-center bg-accent text-white px-5 py-3 hover:bg-accent-deep transition-colors font-medium"
+                className="mt-5 mono-label inline-flex w-full justify-center bg-[#0a0a0a] text-white px-5 py-3 hover:opacity-85 transition-opacity font-medium"
               >
                 Request a strategy call →
               </a>

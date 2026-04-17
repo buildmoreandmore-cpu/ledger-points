@@ -33,7 +33,7 @@ export default function ConciergeBand() {
               </div>
               <a
                 href="mailto:concierge@ledger-points.com?subject=Concierge+Booking"
-                className="mt-5 mono-label inline-flex w-full justify-center bg-accent text-white px-5 py-3 hover:bg-accent-deep transition-colors font-medium"
+                className="mt-5 mono-label inline-flex w-full justify-center bg-white text-ink px-5 py-3 hover:bg-white/90 transition-colors font-medium"
               >
                 Start a concierge booking →
               </a>

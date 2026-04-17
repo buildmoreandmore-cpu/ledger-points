@@ -89,7 +89,7 @@ export default function WaitlistForm() {
                     "mono-label px-6 py-4 md:py-0 transition-colors font-medium",
                     state === "submitting"
                       ? "bg-ink-faint text-white"
-                      : "bg-accent text-white hover:bg-accent-deep",
+                      : "bg-[#0a0a0a] text-white hover:bg-[#0a0a0a]/85",
                   ].join(" ")}
                   style={{ borderRadius: 0 }}
                 >
