@@ -9,91 +9,95 @@ type Props = {
   variant?: "marketing" | "app";
 };
 
+const NAV = [
+  { href: "/app", label: "Try it" },
+  { href: "/deals", label: "Deals" },
+  { href: "/strategy", label: "Strategy" },
+  { href: "/explore", label: "Explore" },
+  { href: "/earn", label: "Earn" },
+];
+
 export default function Masthead({ variant }: Props) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
   const isMarketing = variant === "marketing" || pathname === "/";
   const primary = isMarketing
-    ? { label: "Get early access →", href: "#waitlist" }
+    ? { label: "Get early access", href: "#waitlist" }
     : { label: "New search", href: "#search" };
 
   return (
     <>
-      <header className="border-b hairline bg-paper/90 backdrop-blur-md sticky top-0 z-20">
-        <div className="mx-auto flex max-w-[1440px] items-center justify-between gap-3 px-4 py-3.5 md:px-8 md:py-4">
-          <Link href="/" className="flex items-center gap-2.5" aria-label="RedeemMax home">
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              aria-hidden="true"
-              className="text-accent"
+      <header className="border-b hairline bg-paper/95 backdrop-blur-md sticky top-0 z-20">
+        <div className="mx-auto flex max-w-[1440px] items-center justify-between gap-4 px-4 py-4 md:px-8 md:py-5">
+          <div className="flex items-center gap-8">
+            <Link
+              href="/"
+              className="flex items-center gap-2"
+              aria-label="RedeemMax home"
             >
-              <rect
-                x="2"
-                y="2"
-                width="20"
-                height="20"
-                rx="6"
-                fill="var(--accent)"
-              />
-              <path
-                d="M7.5 14.5 L10.5 11.5 L13 14 L16.5 9"
-                stroke="#ffffff"
-                strokeWidth="1.6"
-                strokeLinecap="round"
-                strokeLinejoin="round"
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
                 fill="none"
-              />
-            </svg>
-            <span className="display text-[17px] md:text-[18px] text-ink tracking-tight">
-              Redeem<span className="text-accent">Max</span>
-            </span>
-          </Link>
-
-          <nav className="hidden items-center gap-6 md:flex">
-            <Link
-              href="/app"
-              className="mono-label hover:text-ink transition-colors"
-            >
-              Try it
+                aria-hidden="true"
+              >
+                <rect
+                  x="2"
+                  y="2"
+                  width="20"
+                  height="20"
+                  rx="6"
+                  fill="var(--accent)"
+                />
+                <path
+                  d="M7.5 14.5 L10.5 11.5 L13 14 L16.5 9"
+                  stroke="#ffffff"
+                  strokeWidth="1.6"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  fill="none"
+                />
+              </svg>
+              <span className="display text-[17px] md:text-[18px] text-ink tracking-tight">
+                Redeem<span className="text-accent">Max</span>
+              </span>
             </Link>
-            <Link
-              href="/deals"
-              className="mono-label hover:text-ink transition-colors"
-            >
-              Deals
-            </Link>
-            <Link
-              href="/strategy"
-              className="mono-label hover:text-ink transition-colors"
-            >
-              Strategy
-            </Link>
-            <Link
-              href="/explore"
-              className="mono-label hover:text-ink transition-colors"
-            >
-              Explore
-            </Link>
-          </nav>
+            <nav className="hidden items-center gap-6 md:flex">
+              {NAV.map((n) => {
+                const active = pathname === n.href;
+                return (
+                  <Link
+                    key={n.href}
+                    href={n.href}
+                    className={[
+                      "text-[14px] font-medium transition-colors",
+                      active
+                        ? "text-ink"
+                        : "text-ink-faint hover:text-ink",
+                    ].join(" ")}
+                  >
+                    {n.label}
+                  </Link>
+                );
+              })}
+            </nav>
+          </div>
 
           <div className="flex items-center gap-2">
             <button
               type="button"
               onClick={() => setOpen(true)}
-              className="mono-label border hairline-strong bg-white px-3 py-2 text-ink hover:bg-surface transition-colors hidden sm:inline-flex items-center gap-1.5"
+              className="inline-flex items-center justify-center w-10 h-10 text-ink-faint hover:text-ink hover:bg-surface transition-colors"
               style={{ borderRadius: "10px" }}
               aria-label="Open settings"
             >
               <GearIcon />
-              <span className="hidden md:inline">Settings</span>
             </button>
             <Link
               href={primary.href}
-              className="mono-label bg-[#0a0a0a] text-white px-4 py-2 hover:opacity-85 transition-opacity"
+              className="bg-[#0a0a0a] text-white px-4 py-2.5 hover:opacity-85 transition-opacity font-semibold text-[13px]"
               style={{ borderRadius: "10px" }}
             >
               {primary.label}
@@ -109,8 +113,8 @@ export default function Masthead({ variant }: Props) {
 function GearIcon() {
   return (
     <svg
-      width="14"
-      height="14"
+      width="18"
+      height="18"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
