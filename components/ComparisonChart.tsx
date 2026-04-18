@@ -72,14 +72,42 @@ const LEDGER_ROW = {
   tool: "— nobody does this —",
 };
 
-export default function ComparisonChart() {
+export default function ComparisonChart({
+  variant = "full",
+}: {
+  variant?: "full" | "collapsed";
+}) {
+  if (variant === "collapsed") {
+    return (
+      <section className="border-b hairline bg-paper">
+        <details className="mx-auto max-w-[1200px] px-4 py-6 md:px-8 md:py-8 group">
+          <summary className="flex items-center justify-between gap-4 cursor-pointer list-none">
+            <span className="display text-[18px] md:text-[22px] text-ink">
+              RedeemMax replaces <em>seventeen tools</em> — see how
+            </span>
+            <span className="mono-label text-accent transition-transform group-open:rotate-180">
+              ▾
+            </span>
+          </summary>
+          <div className="pt-6">
+            <FullChart />
+          </div>
+        </details>
+      </section>
+    );
+  }
+
+  return <FullChart />;
+}
+
+function FullChart() {
   return (
-    <section id="comparison" className="bg-ink text-white">
+    <section id="comparison" className="bg-ink text-white rounded-2xl overflow-hidden">
       <div className="mx-auto max-w-[1440px] px-4 py-14 md:px-8 md:py-20">
         <div className="mb-10 grid gap-6 md:grid-cols-12 md:gap-10 md:mb-14">
           <div className="md:col-span-7">
             <div className="mono-label mb-4 text-accent">
-              04 · The consolidation
+              The consolidation
             </div>
             <h2 className="display text-[30px] leading-[1.05] text-white md:text-[48px] lg:text-[56px]">
               What you used to need <em>seventeen tools</em> for — now in one.

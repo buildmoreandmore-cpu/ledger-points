@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function FooterRail() {
   const year = new Date().getFullYear();
   return (
@@ -10,40 +12,59 @@ export default function FooterRail() {
               <span className="text-ink-faint text-[15px] ml-1">.com</span>
             </div>
             <div className="mt-1 text-[14px] font-medium text-ink">
-              Every point. <em className="italic text-accent not-italic font-semibold">Maximum trip.</em>
+              Every point.{" "}
+              <em className="italic text-accent not-italic font-semibold">
+                Maximum trip.
+              </em>
             </div>
-            <p className="mt-3 text-[14px] leading-[1.5] text-ink-soft md:text-[15px]">
+            <p className="mt-3 text-[14px] leading-[1.5] text-ink-soft md:text-[15px] max-w-[380px]">
               A points-to-travel engine for people who already know what
               Ultimate Rewards are for.
             </p>
           </div>
 
           <div className="md:col-span-3 md:col-start-7">
-            <div className="mono-label mb-2.5">The product</div>
+            <div className="mono-label mb-2.5">Features</div>
             <ul className="flex flex-col gap-1.5">
               <li>
-                <a
-                  href="#search"
+                <Link
+                  href="/app"
                   className="text-[14px] text-ink-soft hover:text-ink"
                 >
-                  Run a search
-                </a>
+                  Try the tool
+                </Link>
               </li>
               <li>
-                <a
-                  href="#comparison"
+                <Link
+                  href="/deals"
                   className="text-[14px] text-ink-soft hover:text-ink"
                 >
-                  The consolidation
-                </a>
+                  Deals
+                </Link>
               </li>
               <li>
-                <a
-                  href="#waitlist"
+                <Link
+                  href="/strategy"
                   className="text-[14px] text-ink-soft hover:text-ink"
                 >
-                  Beta waitlist
-                </a>
+                  Strategy
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/explore"
+                  className="text-[14px] text-ink-soft hover:text-ink"
+                >
+                  Explore
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/earn"
+                  className="text-[14px] text-ink-soft hover:text-ink"
+                >
+                  Earn faster
+                </Link>
               </li>
             </ul>
           </div>
@@ -51,9 +72,9 @@ export default function FooterRail() {
           <div className="md:col-span-3">
             <div className="mono-label mb-2.5">Principles</div>
             <ul className="flex flex-col gap-1.5 text-[14px] text-ink-soft">
-              <li>Saver inventory only, by default.</li>
-              <li>Transferable currencies first.</li>
-              <li>No surcharge laundering.</li>
+              <li>Built for frequent flyers</li>
+              <li>Saver-only inventory</li>
+              <li>Updated every 90 seconds</li>
             </ul>
           </div>
         </div>
