@@ -12,6 +12,7 @@ import BalancePanel, {
 } from "@/components/BalancePanel";
 import SearchForm, { type SearchFormValues } from "@/components/SearchForm";
 import ExploreMode from "@/components/ExploreMode";
+import PowerSearch from "@/components/PowerSearch";
 import ResultsGrid from "@/components/ResultsGrid";
 import DealsSection from "@/components/DealsSection";
 import ComparisonChart from "@/components/ComparisonChart";
@@ -25,7 +26,7 @@ import { CARD_BY_ID, type CardCurrency } from "@/lib/data/cards";
 import type { Cabin } from "@/lib/data/routes";
 
 type Status = "idle" | "searching" | "ready";
-type Mode = "specific" | "explore";
+type Mode = "specific" | "power" | "explore";
 
 const WALLET_KEY = "lp:wallet:v1";
 const BALANCES_KEY = "lp:balances:v1";
@@ -281,35 +282,27 @@ export default function Home() {
       <section id="search" className="border-b hairline">
         <div className="mx-auto max-w-[1440px] px-4 pt-14 md:px-8 md:pt-20">
           <div
-            className="mb-6 inline-flex bg-surface p-1 gap-1"
+            className="mb-6 inline-flex bg-surface p-1 gap-1 flex-wrap"
             style={{ borderRadius: "12px" }}
           >
-            <button
-              type="button"
+            <ModeButton
+              active={mode === "specific"}
               onClick={() => setMode("specific")}
-              className={[
-                "mono-label px-4 py-2 transition-colors font-medium",
-                mode === "specific"
-                  ? "bg-paper text-ink card-shadow"
-                  : "bg-transparent text-ink-faint hover:text-ink",
-              ].join(" ")}
-              style={{ borderRadius: "8px" }}
             >
-              Search a flight
-            </button>
-            <button
-              type="button"
+              Simple search
+            </ModeButton>
+            <ModeButton
+              active={mode === "power"}
+              onClick={() => setMode("power")}
+            >
+              Power search
+            </ModeButton>
+            <ModeButton
+              active={mode === "explore"}
               onClick={() => setMode("explore")}
-              className={[
-                "mono-label px-4 py-2 transition-colors font-medium",
-                mode === "explore"
-                  ? "bg-paper text-ink card-shadow"
-                  : "bg-transparent text-ink-faint hover:text-ink",
-              ].join(" ")}
-              style={{ borderRadius: "8px" }}
             >
               Explore destinations
-            </button>
+            </ModeButton>
           </div>
         </div>
 
@@ -319,6 +312,40 @@ export default function Home() {
             onSubmit={runSearch}
             isSearching={status === "searching"}
           />
+        ) : mode === "power" ? (
+          <div className="mx-auto max-w-[1440px] px-4 pb-14 md:px-8 md:pb-20">
+            <div className="grid gap-6 md:grid-cols-12 md:gap-10 mb-4">
+              <div className="md:col-span-7">
+                <div className="mono-label mb-3 text-accent">
+                  02c · Multi-airport · multi-date
+                </div>
+                <h2 className="display text-[28px] md:text-[40px]">
+                  Cast a <em>wider net.</em>
+                </h2>
+              </div>
+              <div className="md:col-span-4 md:col-start-9 md:pt-4">
+                <p className="text-[15px] leading-[1.55] text-ink-soft md:text-[16px]">
+                  Scan up to 4 origins, 4 destinations, and a 30-day window.
+                  The matrix shows the lowest redemption for every combination.
+                  Click any cell to drill into the three-option detail.
+                </p>
+              </div>
+            </div>
+            <PowerSearch
+              selectedCardIds={selectedCardIds}
+              onCellClick={(pick) => {
+                setMode("specific");
+                runSearch({
+                  origin: pick.origin,
+                  destination: pick.destination,
+                  departDate: pick.date,
+                  cabin: pick.cabin,
+                  saverOnly: true,
+                  cheapestFirst: lastValues?.cheapestFirst ?? false,
+                });
+              }}
+            />
+          </div>
         ) : (
           <div className="mx-auto max-w-[1440px] px-4 pb-14 md:px-8 md:pb-20">
             <div className="grid gap-6 md:grid-cols-12 md:gap-10 mb-6">
@@ -371,6 +398,32 @@ export default function Home() {
       <WaitlistForm />
       <FooterRail />
     </main>
+  );
+}
+
+function ModeButton({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={[
+        "mono-label px-4 py-2 transition-colors font-medium",
+        active
+          ? "bg-paper text-ink card-shadow"
+          : "bg-transparent text-ink-faint hover:text-ink",
+      ].join(" ")}
+      style={{ borderRadius: "8px" }}
+    >
+      {children}
+    </button>
   );
 }
 

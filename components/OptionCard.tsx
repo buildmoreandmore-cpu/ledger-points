@@ -8,6 +8,9 @@ import { CARD_BY_ID, type CardCurrency } from "@/lib/data/cards";
 import type { Cabin } from "@/lib/data/routes";
 import { getRouteStats } from "@/lib/engine/routeStats";
 import SeatMapPreview from "./SeatMapPreview";
+import AlertModal from "./AlertModal";
+import { useSettings } from "@/lib/settings-context";
+import { cardCurrencyToValuation } from "@/lib/settings";
 
 type Props = {
   option: BookingOption;
@@ -192,23 +195,54 @@ function GoalTracker({
   );
 }
 
-function AlertMeButton() {
-  const [watching, setWatching] = useState(false);
+function AlertMeButton({
+  origin,
+  destination,
+  departDate,
+  cabinLabel,
+  program,
+}: {
+  origin: string;
+  destination: string;
+  departDate: string;
+  cabinLabel: string;
+  program: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const [watchingEmail, setWatchingEmail] = useState<string | null>(null);
+  const shortEmail =
+    watchingEmail && watchingEmail.length > 22
+      ? `${watchingEmail.slice(0, 20)}…`
+      : watchingEmail;
+
   return (
-    <button
-      type="button"
-      onClick={() => setWatching((w) => !w)}
-      aria-pressed={watching}
-      className={[
-        "mt-auto mono-label px-5 py-3 text-center transition-colors font-medium",
-        watching
-          ? "bg-[#0a0a0a] text-white"
-          : "bg-surface text-ink border hairline-strong hover:bg-[#0a0a0a] hover:text-white hover:border-[#0a0a0a]",
-      ].join(" ")}
-    >
-      {BELL}
-      {watching ? "Watching · we'll notify you" : "Alert me when space opens"}
-    </button>
+    <>
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        aria-pressed={!!watchingEmail}
+        className={[
+          "mt-auto mono-label px-5 py-3 text-center transition-colors font-medium",
+          watchingEmail
+            ? "bg-[#0a0a0a] text-white"
+            : "bg-surface text-ink border hairline-strong hover:bg-[#0a0a0a] hover:text-white hover:border-[#0a0a0a]",
+        ].join(" ")}
+      >
+        {BELL}
+        {watchingEmail
+          ? `✓ Watching · ${shortEmail}`
+          : "Alert me when space opens"}
+      </button>
+      <AlertModal
+        open={open}
+        context={{ origin, destination, departDate, cabinLabel, program }}
+        onClose={() => setOpen(false)}
+        onConfirm={(email) => {
+          setWatchingEmail(email);
+          setOpen(false);
+        }}
+      />
+    </>
   );
 }
 
@@ -226,9 +260,17 @@ export default function OptionCard({
   selectedCardIds,
 }: Props) {
   const [showMap, setShowMap] = useState(false);
+  const { settings } = useSettings();
   const isMuted = option.availability?.status === "none";
   const routeKey = `${origin}-${destination}`;
   const stats = getRouteStats(routeKey);
+
+  const valKey = cardCurrencyToValuation(option.currencyFrom);
+  const baseline = valKey ? settings.valuations[valKey] : null;
+  const headroom =
+    option.cpp !== null && baseline !== null && baseline > 0
+      ? option.cpp / baseline
+      : null;
 
   const hasBalance = option.currencyFrom
     ? balanceByCurrency[option.currencyFrom] ?? 0
@@ -269,7 +311,15 @@ export default function OptionCard({
 
   let action: React.ReactNode;
   if (!isCash && availabilityBlocks) {
-    action = <AlertMeButton />;
+    action = (
+      <AlertMeButton
+        origin={origin}
+        destination={destination}
+        departDate={departDate}
+        cabinLabel={option.cabinLabel}
+        program={option.programKey ?? option.airline}
+      />
+    );
   } else if (!isCash && isShort) {
     action = (
       <GoalTracker
@@ -395,6 +445,26 @@ export default function OptionCard({
             <span className="mono-label text-ink shrink-0">{row.val}</span>
           </li>
         ))}
+        {headroom !== null && baseline !== null ? (
+          <li className="flex items-start gap-3">
+            {DOT}
+            <span className="flex-1 text-[13px] leading-[1.4] text-ink-soft">
+              Value vs your baseline
+            </span>
+            <span
+              className={[
+                "mono-label shrink-0",
+                headroom >= 2
+                  ? "text-accent font-semibold"
+                  : headroom >= 1
+                  ? "text-ink"
+                  : "text-ink-faint",
+              ].join(" ")}
+            >
+              {headroom.toFixed(1)}× · baseline {baseline.toFixed(2)}¢
+            </span>
+          </li>
+        ) : null}
         {usesExpiring ? (
           <li className="flex items-start gap-3 bg-accent-soft rounded-lg px-3 py-2">
             <span className="mt-[6px] inline-block h-[6px] w-[6px] bg-accent rounded-full shrink-0" />

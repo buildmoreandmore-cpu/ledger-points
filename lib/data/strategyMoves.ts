@@ -9,9 +9,18 @@ export type MoveType =
   | "TIMING PLAY"
   | "REDEMPTION TIMING";
 
+export type Issuer =
+  | "chase"
+  | "amex"
+  | "capital_one"
+  | "citi"
+  | "bilt"
+  | "other"
+  | null;
+
 export type StrategyMove = {
   id: string;
-  type: MoveType;
+  type: MoveType | "CREDIT STRATEGY";
   urgency: { label: string; days: number } | null;
   move: string;
   reasoning: string;
@@ -21,6 +30,7 @@ export type StrategyMove = {
   requiresCurrency?: CardCurrency;
   requiresMissingCurrency?: CardCurrency;
   minBalance?: number;
+  issuer?: Issuer;
   actionType: "search" | "card" | "none";
   searchPrefill?: { origin: string; destination: string; cabin: Cabin };
   cardId?: string;
@@ -39,6 +49,7 @@ export const STRATEGY_MOVES: StrategyMove[] = [
     requiresCards: ["amp", "amg"],
     requiresCurrency: "MR",
     minBalance: 50000,
+    issuer: "amex",
     actionType: "search",
     searchPrefill: { origin: "ATL", destination: "CDG", cabin: "business" },
   },
@@ -54,6 +65,7 @@ export const STRATEGY_MOVES: StrategyMove[] = [
     requiresCards: ["citi"],
     requiresCurrency: "TY",
     minBalance: 40000,
+    issuer: "citi",
     actionType: "search",
     searchPrefill: { origin: "JFK", destination: "FCO", cabin: "business" },
   },
@@ -67,6 +79,7 @@ export const STRATEGY_MOVES: StrategyMove[] = [
     impact: { value: "40,000 points", label: "saved per round-trip" },
     path: "Amex Gold · 60k bonus · $325 annual fee",
     requiresMissingCurrency: "MR",
+    issuer: "amex",
     actionType: "card",
     cardId: "amg",
   },
@@ -80,6 +93,7 @@ export const STRATEGY_MOVES: StrategyMove[] = [
     impact: { value: "34,000 points", label: "saved vs Flying Blue" },
     path: "Capital One Venture X · 75k bonus · $95 annual fee",
     requiresMissingCurrency: "C1",
+    issuer: "capital_one",
     actionType: "card",
     cardId: "cap",
   },
@@ -93,6 +107,7 @@ export const STRATEGY_MOVES: StrategyMove[] = [
     impact: { value: "3 programs", label: "unlocked on approval" },
     path: "Chase Sapphire Preferred · 75k bonus · $95 annual fee",
     requiresMissingCurrency: "UR",
+    issuer: "chase",
     actionType: "card",
     cardId: "csp",
   },
@@ -107,6 +122,7 @@ export const STRATEGY_MOVES: StrategyMove[] = [
     path: "Wait · monitor transfer bonus tracker",
     requiresCards: ["cap"],
     requiresCurrency: "C1",
+    issuer: "capital_one",
     actionType: "none",
   },
   {
@@ -121,23 +137,44 @@ export const STRATEGY_MOVES: StrategyMove[] = [
     requiresCards: ["amp", "amg", "csr", "csp", "cik"],
     requiresCurrency: "MR",
     minBalance: 110000,
+    issuer: "amex",
     actionType: "search",
     searchPrefill: { origin: "LAX", destination: "NRT", cabin: "first" },
   },
 ];
 
+function slashWarningMove(count: number): StrategyMove {
+  const months = count >= 7 ? 12 : 6;
+  return {
+    id: "524-warning",
+    type: "CREDIT STRATEGY",
+    urgency: null,
+    move: `You're at ${count}/24. Hold Chase applications for the next ${months} months.`,
+    reasoning: `Chase denies new card applications when you have 5 or more new credit cards on your personal credit report from the last 24 months. You're currently at ${count}. Focus on Amex, Capital One, or Citi products until your count drops below 5, then re-evaluate Chase.`,
+    impact: { value: "Avoid denial", label: "· Chase approvals return at 4/24" },
+    path: "Delay Chase · apply Amex, Capital One, or Citi instead",
+    issuer: null,
+    actionType: "none",
+  };
+}
+
 export type MoveFilterInput = {
   selectedCardIds: string[];
   balanceByCurrency: Partial<Record<CardCurrency, number>>;
   selectedCurrencies: Set<CardCurrency>;
+  slashTwentyFour: number;
 };
 
 export function filterAndRankMoves({
   selectedCardIds,
   balanceByCurrency,
   selectedCurrencies,
+  slashTwentyFour,
 }: MoveFilterInput): StrategyMove[] {
+  const overSlash = slashTwentyFour >= 5;
+
   const viable = STRATEGY_MOVES.filter((m) => {
+    if (overSlash && m.issuer === "chase") return false;
     if (
       m.requiresMissingCurrency &&
       selectedCurrencies.has(m.requiresMissingCurrency)
@@ -159,7 +196,12 @@ export function filterAndRankMoves({
     return true;
   });
 
-  const typeRank: Record<MoveType, number> = {
+  if (overSlash) {
+    viable.unshift(slashWarningMove(slashTwentyFour));
+  }
+
+  const typeRank: Record<StrategyMove["type"], number> = {
+    "CREDIT STRATEGY": -1,
     "TRANSFER BONUS": 0,
     "EXPIRING POINTS": 0,
     "NEW CARD": 1,

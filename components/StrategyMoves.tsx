@@ -6,6 +6,7 @@ import {
 } from "@/lib/data/strategyMoves";
 import { CARD_BY_ID, type CardCurrency } from "@/lib/data/cards";
 import type { Cabin } from "@/lib/data/routes";
+import { useSettings } from "@/lib/settings-context";
 
 type Props = {
   selectedCardIds: string[];
@@ -30,12 +31,14 @@ export default function StrategyMoves({
     if (card) selectedCurrencies.add(card.currency);
   }
 
+  const { settings } = useSettings();
   const hasEnough = selectedCardIds.length >= 2;
   const moves = hasEnough
     ? filterAndRankMoves({
         selectedCardIds,
         balanceByCurrency,
         selectedCurrencies,
+        slashTwentyFour: settings.slashTwentyFour,
       })
     : [];
 

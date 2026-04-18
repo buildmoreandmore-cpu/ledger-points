@@ -1,6 +1,7 @@
 type Row = {
   capability: string;
   tool: string;
+  edge?: boolean;
 };
 
 const ROWS: Row[] = [
@@ -51,6 +52,19 @@ const ROWS: Row[] = [
     capability: "Points strategy + concierge booking",
     tool: "point.me Premium ($260/yr + $200/booking)",
   },
+  {
+    capability: "Multi-airport and multi-date matrix search",
+    tool: "Award Tool Pro ($9.99/mo)",
+  },
+  {
+    capability: "Customizable point valuations",
+    tool: "Points Path Pro ($9.99/mo)",
+  },
+  {
+    capability: "5/24 awareness in card recommendations",
+    tool: "— nobody does this —",
+    edge: true,
+  },
 ];
 
 const LEDGER_ROW = {
@@ -68,7 +82,7 @@ export default function ComparisonChart() {
               04 · The consolidation
             </div>
             <h2 className="display text-[30px] leading-[1.05] text-white md:text-[48px] lg:text-[56px]">
-              What you used to need <em>fourteen tools</em> for — now in one.
+              What you used to need <em>seventeen tools</em> for — now in one.
             </h2>
           </div>
           <div className="md:col-span-4 md:col-start-9 md:pt-4">
@@ -99,16 +113,29 @@ export default function ComparisonChart() {
               className={[
                 "grid grid-cols-[1fr_auto] md:grid-cols-[1.3fr_1fr_auto] gap-3 md:gap-6 px-4 md:px-5 py-3.5 md:py-4",
                 i > 0 ? "border-t border-white/10" : "",
+                row.edge ? "bg-accent/15" : "",
               ].join(" ")}
             >
-              <span className="text-[14px] leading-[1.35] text-white md:text-[15px]">
+              <span
+                className={[
+                  "text-[14px] leading-[1.35] md:text-[15px]",
+                  row.edge
+                    ? "text-accent font-semibold"
+                    : "text-white",
+                ].join(" ")}
+              >
                 {row.capability}
               </span>
               <span className="hidden md:block text-[14px] text-white/50">
                 {row.tool}
               </span>
-              <span className="mono-label text-accent justify-self-end">
-                ✓ Built in
+              <span
+                className={[
+                  "mono-label justify-self-end",
+                  row.edge ? "text-accent font-semibold" : "text-accent",
+                ].join(" ")}
+              >
+                {row.edge ? "✓ Our edge" : "✓ Built in"}
               </span>
             </div>
           ))}
