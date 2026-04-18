@@ -181,17 +181,34 @@ export default function AppPage() {
     (pick: { origin: string; destination: string; cabin: Cabin }) => {
       setMode("simple");
       const cheapestFirst = lastValues?.cheapestFirst ?? false;
-      setPrefillValues({ ...pick, saverOnly: true, cheapestFirst });
+      const tripType = lastValues?.tripType ?? "round-trip";
+      const departDate =
+        lastValues?.departDate ??
+        (() => {
+          const d = new Date();
+          d.setUTCDate(d.getUTCDate() + 45);
+          return d.toISOString().slice(0, 10);
+        })();
+      const returnDate =
+        lastValues?.returnDate ??
+        (() => {
+          const d = new Date(`${departDate}T00:00:00Z`);
+          d.setUTCDate(d.getUTCDate() + 7);
+          return d.toISOString().slice(0, 10);
+        })();
+      setPrefillValues({
+        ...pick,
+        saverOnly: true,
+        cheapestFirst,
+        tripType,
+        returnDate,
+      });
       runSearch({
         origin: pick.origin,
         destination: pick.destination,
-        departDate:
-          lastValues?.departDate ??
-          (() => {
-            const d = new Date();
-            d.setUTCDate(d.getUTCDate() + 45);
-            return d.toISOString().slice(0, 10);
-          })(),
+        departDate,
+        returnDate,
+        tripType,
         cabin: pick.cabin,
         saverOnly: true,
         cheapestFirst,
@@ -275,10 +292,17 @@ export default function AppPage() {
               selectedCardIds={selectedCardIds}
               onCellClick={(pick) => {
                 setMode("simple");
+                const returnDate = (() => {
+                  const d = new Date(`${pick.date}T00:00:00Z`);
+                  d.setUTCDate(d.getUTCDate() + 7);
+                  return d.toISOString().slice(0, 10);
+                })();
                 runSearch({
                   origin: pick.origin,
                   destination: pick.destination,
                   departDate: pick.date,
+                  returnDate,
+                  tripType: lastValues?.tripType ?? "round-trip",
                   cabin: pick.cabin,
                   saverOnly: true,
                   cheapestFirst: lastValues?.cheapestFirst ?? false,

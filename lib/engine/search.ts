@@ -15,10 +15,14 @@ import {
 
 export type { Cabin } from "../data/routes";
 
+export type TripType = "round-trip" | "one-way";
+
 export type SearchInput = {
   origin: string;
   destination: string;
   departDate: string;
+  returnDate?: string;
+  tripType?: TripType;
   cabin: Cabin;
   selectedCardIds: string[];
   saverOnly?: boolean;
@@ -53,6 +57,8 @@ export type SearchResult = {
     duration: string;
     cabin: Cabin;
     departDate: string;
+    returnDate: string | null;
+    tripType: TripType;
     flightNumber: string;
     carrier: string;
   };
@@ -331,6 +337,7 @@ export async function searchFlights(
     routeEntry?.cashFare[input.cabin] ??
     Math.round(900 * cabinMultipliers[input.cabin]);
 
+  const tripType: TripType = input.tripType ?? "round-trip";
   const route: SearchResult["route"] = {
     origin,
     destination,
@@ -339,6 +346,8 @@ export async function searchFlights(
     duration,
     cabin: input.cabin,
     departDate: input.departDate,
+    returnDate: tripType === "round-trip" ? (input.returnDate ?? null) : null,
+    tripType,
     flightNumber: flight,
     carrier,
   };

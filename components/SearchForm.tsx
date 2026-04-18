@@ -4,10 +4,14 @@ import { useId, useState } from "react";
 import { DESTINATIONS, ORIGINS } from "@/lib/data/routes";
 import type { Cabin } from "@/lib/data/routes";
 
+export type TripType = "round-trip" | "one-way";
+
 export type SearchFormValues = {
   origin: string;
   destination: string;
   departDate: string;
+  returnDate: string;
+  tripType: TripType;
   cabin: Cabin;
   saverOnly: boolean;
   cheapestFirst: boolean;
@@ -32,10 +36,17 @@ function defaultDepartDate(): string {
   return d.toISOString().slice(0, 10);
 }
 
+function defaultReturnDate(depart: string): string {
+  const d = new Date(`${depart}T00:00:00Z`);
+  d.setUTCDate(d.getUTCDate() + 7);
+  return d.toISOString().slice(0, 10);
+}
+
 export default function SearchForm({ initial, onSubmit, isSearching }: Props) {
   const originId = useId();
   const destId = useId();
   const dateId = useId();
+  const returnId = useId();
   const cabinId = useId();
   const saverId = useId();
   const cheapId = useId();
@@ -46,6 +57,12 @@ export default function SearchForm({ initial, onSubmit, isSearching }: Props) {
   );
   const [departDate, setDepartDate] = useState(
     initial?.departDate ?? defaultDepartDate()
+  );
+  const [returnDate, setReturnDate] = useState(
+    initial?.returnDate ?? defaultReturnDate(initial?.departDate ?? defaultDepartDate())
+  );
+  const [tripType, setTripType] = useState<TripType>(
+    initial?.tripType ?? "round-trip"
   );
   const [cabin, setCabin] = useState<Cabin>(initial?.cabin ?? "business");
   const [saverOnly, setSaverOnly] = useState(initial?.saverOnly ?? true);
@@ -83,13 +100,29 @@ export default function SearchForm({ initial, onSubmit, isSearching }: Props) {
               origin,
               destination,
               departDate,
+              returnDate,
+              tripType,
               cabin,
               saverOnly,
               cheapestFirst,
             });
           }}
         >
-          <div className="grid grid-cols-2 md:grid-cols-4">
+          <div className="border-b hairline px-4 py-3 md:px-5 flex flex-wrap items-center gap-2">
+            <TripTypeButton
+              active={tripType === "round-trip"}
+              onClick={() => setTripType("round-trip")}
+            >
+              Round-trip
+            </TripTypeButton>
+            <TripTypeButton
+              active={tripType === "one-way"}
+              onClick={() => setTripType("one-way")}
+            >
+              One-way
+            </TripTypeButton>
+          </div>
+          <div className={tripType === "round-trip" ? "grid grid-cols-2 md:grid-cols-5" : "grid grid-cols-2 md:grid-cols-4"}>
             <div className="border-b md:border-b-0 md:border-r hairline">
               <FieldLabel id={originId} label="Origin" />
               <select
@@ -122,18 +155,37 @@ export default function SearchForm({ initial, onSubmit, isSearching }: Props) {
                 ))}
               </select>
             </div>
-            <div className="md:border-r hairline">
+            <div className="md:border-r hairline border-t md:border-t-0">
               <FieldLabel id={dateId} label="Depart" />
               <input
                 id={dateId}
                 type="date"
                 value={departDate}
-                onChange={(e) => setDepartDate(e.target.value)}
+                onChange={(e) => {
+                  setDepartDate(e.target.value);
+                  if (tripType === "round-trip" && returnDate < e.target.value) {
+                    setReturnDate(defaultReturnDate(e.target.value));
+                  }
+                }}
                 className="w-full bg-transparent px-4 pb-4 text-[15px] md:text-[17px] text-ink outline-none"
                 style={{ borderRadius: 0 }}
               />
             </div>
-            <div className="border-l md:border-l-0">
+            {tripType === "round-trip" ? (
+              <div className="md:border-r hairline border-l md:border-l-0 border-t md:border-t-0">
+                <FieldLabel id={returnId} label="Return" />
+                <input
+                  id={returnId}
+                  type="date"
+                  value={returnDate}
+                  min={departDate}
+                  onChange={(e) => setReturnDate(e.target.value)}
+                  className="w-full bg-transparent px-4 pb-4 text-[15px] md:text-[17px] text-ink outline-none"
+                  style={{ borderRadius: 0 }}
+                />
+              </div>
+            ) : null}
+            <div className="border-l md:border-l-0 border-t md:border-t-0">
               <FieldLabel id={cabinId} label="Cabin" />
               <select
                 id={cabinId}
@@ -201,6 +253,33 @@ function FieldLabel({ id, label }: { id: string; label: string }) {
     <label htmlFor={id} className="block px-4 pt-4 pb-2 mono-label">
       {label}
     </label>
+  );
+}
+
+function TripTypeButton({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={active}
+      className={[
+        "text-[13px] font-medium px-3 py-1.5 transition-colors",
+        active
+          ? "bg-ink text-white"
+          : "bg-transparent text-ink-faint hover:text-ink",
+      ].join(" ")}
+      style={{ borderRadius: "999px", minHeight: "auto" }}
+    >
+      {children}
+    </button>
   );
 }
 

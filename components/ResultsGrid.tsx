@@ -70,8 +70,12 @@ export default function ResultsGrid({
             </h2>
           </div>
           <div className="mono-label text-ink-faint">
-            {formatDate(route.departDate)} · {route.flightNumber} ·{" "}
-            {route.carrier}
+            {route.tripType === "round-trip" ? "Round-trip · " : "One-way · "}
+            {formatDate(route.departDate)}
+            {route.tripType === "round-trip" && route.returnDate
+              ? ` → ${formatDate(route.returnDate)}`
+              : ""}{" "}
+            · {route.flightNumber} · {route.carrier}
           </div>
         </div>
 
