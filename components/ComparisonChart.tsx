@@ -40,6 +40,14 @@ const ROWS: Row[] = [
     tool: "Thrifty Traveler + TPG",
   },
   {
+    capability: "Personalized points strategy (moves tailored to your wallet)",
+    tool: "Frequent Miler (manual) · point.me Premium ($260/yr)",
+  },
+  {
+    capability: "Editorial deal briefs with positioning plays",
+    tool: "Thrifty Traveler Premium ($99/yr)",
+  },
+  {
     capability: "Points strategy + concierge booking",
     tool: "point.me Premium ($260/yr + $200/booking)",
   },
@@ -60,7 +68,7 @@ export default function ComparisonChart() {
               04 · The consolidation
             </div>
             <h2 className="display text-[30px] leading-[1.05] text-white md:text-[48px] lg:text-[56px]">
-              What you used to need <em>twelve tools</em> for — now in one.
+              What you used to need <em>fourteen tools</em> for — now in one.
             </h2>
           </div>
           <div className="md:col-span-4 md:col-start-9 md:pt-4">

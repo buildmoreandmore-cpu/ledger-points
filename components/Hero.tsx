@@ -27,10 +27,12 @@ export default function Hero() {
           <div className="md:col-span-5 md:pt-8">
             <p className="text-[16px] leading-[1.6] text-ink-soft md:text-[18px]">
               One search replaces Seats.aero, AwardFares, ExpertFlyer,
-              AwardWallet, and every other tab you&apos;ve got open. Tell us
-              which cards live in your wallet. We&apos;ll return three bookable
-              options — cash, transfer partner, and the sweet-spot award —
-              filtered to what you can actually redeem today.
+              AwardWallet, Thrifty Traveler, Frequent Miler, and every other
+              tab you&apos;ve got open. Tell us which cards live in your
+              wallet. We&apos;ll return three bookable options — cash, transfer
+              partner, and the sweet-spot award — plus{" "}
+              <em>personalized moves and weekly deal briefs</em> filtered to
+              what you actually hold.
             </p>
           </div>
         </div>

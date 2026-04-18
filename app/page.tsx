@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Masthead from "@/components/Masthead";
 import Hero from "@/components/Hero";
 import UnicornsStrip from "@/components/UnicornsStrip";
+import StrategyMoves from "@/components/StrategyMoves";
 import CardLibrary from "@/components/CardLibrary";
 import BalancePanel, {
   type BalanceMap,
@@ -12,6 +13,7 @@ import BalancePanel, {
 import SearchForm, { type SearchFormValues } from "@/components/SearchForm";
 import ExploreMode from "@/components/ExploreMode";
 import ResultsGrid from "@/components/ResultsGrid";
+import DealsSection from "@/components/DealsSection";
 import ComparisonChart from "@/components/ComparisonChart";
 import PointsStrategyCTA from "@/components/PointsStrategyCTA";
 import ConciergeBand from "@/components/ConciergeBand";
@@ -244,11 +246,30 @@ export default function Home() {
       return d.toISOString().slice(0, 10);
     })();
 
+  const handleStrategyCardPick = useCallback((cardId: string) => {
+    const el = document.getElementById("wallet");
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    setSelectedCardIds((prev) =>
+      prev.includes(cardId) ? prev : [...prev, cardId]
+    );
+    setBalances((prev) =>
+      prev[cardId] !== undefined
+        ? prev
+        : { ...prev, [cardId]: CARD_BY_ID[cardId]?.defaultPoints ?? 0 }
+    );
+  }, []);
+
   return (
     <main className="min-h-dvh">
       <Masthead />
       <UnicornsStrip onPick={handleUnicornPick} />
       <Hero />
+      <StrategyMoves
+        selectedCardIds={selectedCardIds}
+        balanceByCurrency={balanceByCurrency}
+        onRunSearch={handleUnicornPick}
+        onPickCard={handleStrategyCardPick}
+      />
       <CardLibrary selectedCardIds={selectedCardIds} onToggle={toggleCard} />
       <BalancePanel
         selectedCardIds={selectedCardIds}
@@ -343,6 +364,7 @@ export default function Home() {
         )}
       </div>
 
+      <DealsSection selectedCardIds={selectedCardIds} />
       <ComparisonChart />
       <PointsStrategyCTA />
       <ConciergeBand />
