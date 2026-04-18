@@ -1,8 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Masthead from "@/components/Masthead";
-import Hero from "@/components/Hero";
 import UnicornsStrip from "@/components/UnicornsStrip";
 import StrategyMoves from "@/components/StrategyMoves";
 import CardLibrary from "@/components/CardLibrary";
@@ -11,14 +11,8 @@ import BalancePanel, {
   type ExpirationMap,
 } from "@/components/BalancePanel";
 import SearchForm, { type SearchFormValues } from "@/components/SearchForm";
-import ExploreMode from "@/components/ExploreMode";
 import PowerSearch from "@/components/PowerSearch";
 import ResultsGrid from "@/components/ResultsGrid";
-import DealsSection from "@/components/DealsSection";
-import ComparisonChart from "@/components/ComparisonChart";
-import PointsStrategyCTA from "@/components/PointsStrategyCTA";
-import ConciergeBand from "@/components/ConciergeBand";
-import WaitlistForm from "@/components/WaitlistForm";
 import FooterRail from "@/components/FooterRail";
 import { searchFlights, type SearchResult } from "@/lib/engine/search";
 import { getExpiration } from "@/lib/engine/expiration";
@@ -26,7 +20,7 @@ import { CARD_BY_ID, type CardCurrency } from "@/lib/data/cards";
 import type { Cabin } from "@/lib/data/routes";
 
 type Status = "idle" | "searching" | "ready";
-type Mode = "specific" | "power" | "explore";
+type Mode = "simple" | "power";
 
 const WALLET_KEY = "lp:wallet:v1";
 const BALANCES_KEY = "lp:balances:v1";
@@ -42,12 +36,14 @@ function defaultBalances(ids: string[]): BalanceMap {
   return out;
 }
 
-export default function Home() {
-  const [selectedCardIds, setSelectedCardIds] = useState<string[]>(DEFAULT_CARDS);
+export default function AppPage() {
+  const [selectedCardIds, setSelectedCardIds] =
+    useState<string[]>(DEFAULT_CARDS);
   const [balances, setBalances] = useState<BalanceMap>(
     defaultBalances(DEFAULT_CARDS)
   );
-  const [mode, setMode] = useState<Mode>("specific");
+  const [mode, setMode] = useState<Mode>("simple");
+  const [balancesOpen, setBalancesOpen] = useState(false);
   const [result, setResult] = useState<SearchResult | null>(null);
   const [status, setStatus] = useState<Status>("idle");
   const [lastValues, setLastValues] = useState<SearchFormValues | null>(null);
@@ -86,7 +82,7 @@ export default function Home() {
         }
       }
     } catch {
-      // ignore malformed storage
+      // ignore
     }
     hasHydrated.current = true;
   }, []);
@@ -183,10 +179,10 @@ export default function Home() {
 
   const handleUnicornPick = useCallback(
     (pick: { origin: string; destination: string; cabin: Cabin }) => {
-      setMode("specific");
+      setMode("simple");
       const cheapestFirst = lastValues?.cheapestFirst ?? false;
       setPrefillValues({ ...pick, saverOnly: true, cheapestFirst });
-      const next: SearchFormValues = {
+      runSearch({
         origin: pick.origin,
         destination: pick.destination,
         departDate:
@@ -199,53 +195,10 @@ export default function Home() {
         cabin: pick.cabin,
         saverOnly: true,
         cheapestFirst,
-      };
-      runSearch(next);
-    },
-    [lastValues, runSearch]
-  );
-
-  const handleExplorePick = useCallback(
-    (destination: string) => {
-      setMode("specific");
-      const origin = lastValues?.origin ?? "ATL";
-      const cabin = lastValues?.cabin ?? "business";
-      const departDate =
-        lastValues?.departDate ??
-        (() => {
-          const d = new Date();
-          d.setUTCDate(d.getUTCDate() + 45);
-          return d.toISOString().slice(0, 10);
-        })();
-      const cheapestFirst = lastValues?.cheapestFirst ?? false;
-      setPrefillValues({
-        origin,
-        destination,
-        cabin,
-        saverOnly: true,
-        cheapestFirst,
-      });
-      runSearch({
-        origin,
-        destination,
-        cabin,
-        departDate,
-        saverOnly: true,
-        cheapestFirst,
       });
     },
     [lastValues, runSearch]
   );
-
-  const initialOrigin = lastValues?.origin ?? "ATL";
-  const initialCabin: Cabin = lastValues?.cabin ?? "business";
-  const initialDepart =
-    lastValues?.departDate ??
-    (() => {
-      const d = new Date();
-      d.setUTCDate(d.getUTCDate() + 45);
-      return d.toISOString().slice(0, 10);
-    })();
 
   const handleStrategyCardPick = useCallback((cardId: string) => {
     const el = document.getElementById("wallet");
@@ -264,77 +217,64 @@ export default function Home() {
     <main className="min-h-dvh">
       <Masthead />
       <UnicornsStrip onPick={handleUnicornPick} />
-      <Hero />
-      <StrategyMoves
-        selectedCardIds={selectedCardIds}
-        balanceByCurrency={balanceByCurrency}
-        onRunSearch={handleUnicornPick}
-        onPickCard={handleStrategyCardPick}
-      />
+
+      <section className="border-b hairline">
+        <div className="mx-auto max-w-[1200px] px-4 pt-14 pb-10 md:px-8 md:pt-20 md:pb-14">
+          <div className="eyebrow mb-3 uppercase tracking-wider">
+            Your wallet
+          </div>
+          <h1 className="display text-[32px] md:text-[48px] max-w-[720px]">
+            Tap the cards you hold.
+          </h1>
+        </div>
+      </section>
+
       <CardLibrary selectedCardIds={selectedCardIds} onToggle={toggleCard} />
-      <BalancePanel
-        selectedCardIds={selectedCardIds}
-        balances={balances}
-        expirations={expirations}
-        onChange={onBalanceChange}
-      />
+
+      <section className="border-b hairline">
+        <div className="mx-auto max-w-[1200px] px-4 py-6 md:px-8 md:py-8">
+          <button
+            type="button"
+            onClick={() => setBalancesOpen((o) => !o)}
+            className="flex items-center gap-2 text-[14px] font-medium text-ink hover:text-accent transition-colors"
+            aria-expanded={balancesOpen}
+          >
+            <span className={balancesOpen ? "rotate-90 transition-transform" : "transition-transform"}>
+              ▸
+            </span>
+            Edit balances · {selectedCardIds.length} card{selectedCardIds.length === 1 ? "" : "s"}
+          </button>
+        </div>
+        {balancesOpen ? (
+          <BalancePanel
+            selectedCardIds={selectedCardIds}
+            balances={balances}
+            expirations={expirations}
+            onChange={onBalanceChange}
+          />
+        ) : null}
+      </section>
 
       <section id="search" className="border-b hairline">
-        <div className="mx-auto max-w-[1440px] px-4 pt-14 md:px-8 md:pt-20">
-          <div
-            className="mb-6 inline-flex bg-surface p-1 gap-1 flex-wrap"
-            style={{ borderRadius: "12px" }}
-          >
-            <ModeButton
-              active={mode === "specific"}
-              onClick={() => setMode("specific")}
-            >
-              Simple search
-            </ModeButton>
-            <ModeButton
-              active={mode === "power"}
-              onClick={() => setMode("power")}
-            >
-              Power search
-            </ModeButton>
-            <ModeButton
-              active={mode === "explore"}
-              onClick={() => setMode("explore")}
-            >
-              Explore destinations
-            </ModeButton>
-          </div>
+        <div className="mx-auto max-w-[1200px] px-4 pt-14 pb-6 md:px-8 md:pt-20 md:pb-8">
+          <div className="eyebrow mb-3 uppercase tracking-wider">Search</div>
+          <h2 className="display text-[32px] md:text-[48px] max-w-[720px]">
+            Where to?
+          </h2>
         </div>
 
-        {mode === "specific" ? (
+        {mode === "simple" ? (
           <SearchForm
             initial={prefillValues ?? lastValues ?? undefined}
             onSubmit={runSearch}
             isSearching={status === "searching"}
           />
-        ) : mode === "power" ? (
-          <div className="mx-auto max-w-[1440px] px-4 pb-14 md:px-8 md:pb-20">
-            <div className="grid gap-6 md:grid-cols-12 md:gap-10 mb-4">
-              <div className="md:col-span-7">
-                <div className="mono-label mb-3 text-accent">
-                  02c · Multi-airport · multi-date
-                </div>
-                <h2 className="display text-[28px] md:text-[40px]">
-                  Cast a <em>wider net.</em>
-                </h2>
-              </div>
-              <div className="md:col-span-4 md:col-start-9 md:pt-4">
-                <p className="text-[15px] leading-[1.55] text-ink-soft md:text-[16px]">
-                  Scan up to 4 origins, 4 destinations, and a 30-day window.
-                  The matrix shows the lowest redemption for every combination.
-                  Click any cell to drill into the three-option detail.
-                </p>
-              </div>
-            </div>
+        ) : (
+          <div className="mx-auto max-w-[1200px] px-4 pb-10 md:px-8 md:pb-14">
             <PowerSearch
               selectedCardIds={selectedCardIds}
               onCellClick={(pick) => {
-                setMode("specific");
+                setMode("simple");
                 runSearch({
                   origin: pick.origin,
                   destination: pick.destination,
@@ -346,34 +286,28 @@ export default function Home() {
               }}
             />
           </div>
-        ) : (
-          <div className="mx-auto max-w-[1440px] px-4 pb-14 md:px-8 md:pb-20">
-            <div className="grid gap-6 md:grid-cols-12 md:gap-10 mb-6">
-              <div className="md:col-span-6">
-                <div className="mono-label mb-3 text-accent">
-                  02b · Destination-first
-                </div>
-                <h2 className="display text-[28px] md:text-[40px]">
-                  Let the <em>cards pick</em> the city.
-                </h2>
-              </div>
-              <div className="md:col-span-5 md:col-start-8 md:pt-4">
-                <p className="text-[15px] leading-[1.55] text-ink-soft md:text-[16px]">
-                  Give us a region. We&apos;ll scan every route you can
-                  actually redeem with the cards you hold, ranked by lowest
-                  points or highest cpp.
-                </p>
-              </div>
-            </div>
-            <ExploreMode
-              selectedCardIds={selectedCardIds}
-              cabin={initialCabin}
-              origin={initialOrigin}
-              departDate={initialDepart}
-              onPickDestination={handleExplorePick}
-            />
-          </div>
         )}
+
+        <div className="mx-auto max-w-[1200px] px-4 pb-10 md:px-8 md:pb-14">
+          <button
+            type="button"
+            onClick={() =>
+              setMode((m) => (m === "simple" ? "power" : "simple"))
+            }
+            className="text-[13px] text-ink-faint hover:text-ink transition-colors underline-offset-4 hover:underline"
+          >
+            {mode === "simple"
+              ? "Need multi-airport or flexible dates? Try power search →"
+              : "Back to simple search →"}
+          </button>
+          <span className="mx-2 text-ink-faint">·</span>
+          <Link
+            href="/explore"
+            className="text-[13px] text-ink-faint hover:text-ink transition-colors underline-offset-4 hover:underline"
+          >
+            Or explore destinations by region →
+          </Link>
+        </div>
       </section>
 
       <div ref={resultsRef}>
@@ -386,62 +320,60 @@ export default function Home() {
             expiringCardIds={expiringCardIds}
             selectedCardIds={selectedCardIds}
           />
-        ) : (
-          <EmptyResultsPlaceholder />
-        )}
+        ) : null}
       </div>
 
-      <DealsSection selectedCardIds={selectedCardIds} />
-      <ComparisonChart />
-      <PointsStrategyCTA />
-      <ConciergeBand />
-      <WaitlistForm />
+      <StrategyMoves
+        selectedCardIds={selectedCardIds}
+        balanceByCurrency={balanceByCurrency}
+        onRunSearch={handleUnicornPick}
+        onPickCard={handleStrategyCardPick}
+      />
+
+      <section className="border-b hairline bg-surface">
+        <div className="mx-auto max-w-[1200px] px-4 py-10 md:px-8 md:py-14">
+          <div className="grid gap-8 md:grid-cols-3 md:gap-10">
+            <Link
+              href="/deals"
+              className="group block border hairline-strong bg-paper p-5 md:p-6 transition-all hover:border-accent"
+              style={{ borderRadius: "14px" }}
+            >
+              <div className="eyebrow mb-2 uppercase tracking-wider">
+                This week&apos;s deals
+              </div>
+              <div className="display text-[20px] md:text-[22px] text-ink group-hover:text-accent transition-colors">
+                4 editorial briefs →
+              </div>
+            </Link>
+            <Link
+              href="/strategy"
+              className="group block border hairline-strong bg-paper p-5 md:p-6 transition-all hover:border-accent"
+              style={{ borderRadius: "14px" }}
+            >
+              <div className="eyebrow mb-2 uppercase tracking-wider">
+                Strategy
+              </div>
+              <div className="display text-[20px] md:text-[22px] text-ink group-hover:text-accent transition-colors">
+                Your next moves →
+              </div>
+            </Link>
+            <Link
+              href="/earn"
+              className="group block border hairline-strong bg-paper p-5 md:p-6 transition-all hover:border-accent"
+              style={{ borderRadius: "14px" }}
+            >
+              <div className="eyebrow mb-2 uppercase tracking-wider">
+                Earn faster
+              </div>
+              <div className="display text-[20px] md:text-[22px] text-ink group-hover:text-accent transition-colors">
+                Offers + next-purchase →
+              </div>
+            </Link>
+          </div>
+        </div>
+      </section>
+
       <FooterRail />
     </main>
-  );
-}
-
-function ModeButton({
-  active,
-  onClick,
-  children,
-}: {
-  active: boolean;
-  onClick: () => void;
-  children: React.ReactNode;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={[
-        "mono-label px-4 py-2 transition-colors font-medium",
-        active
-          ? "bg-paper text-ink card-shadow"
-          : "bg-transparent text-ink-faint hover:text-ink",
-      ].join(" ")}
-      style={{ borderRadius: "8px" }}
-    >
-      {children}
-    </button>
-  );
-}
-
-function EmptyResultsPlaceholder() {
-  return (
-    <section className="border-b hairline">
-      <div className="mx-auto max-w-[1440px] px-4 py-14 md:px-8 md:py-20">
-        <div className="mono-label text-accent">
-          03 · Three booking options
-        </div>
-        <h2 className="display mt-3 text-[28px] leading-[1.05] md:text-[44px] text-ink-faint">
-          Awaiting <em>your wallet</em>, your flight, your question.
-        </h2>
-        <p className="mt-4 max-w-[640px] text-[15px] leading-[1.55] text-ink-soft md:text-[17px]">
-          Pick the cards you carry above, edit your balances, then run a
-          search. Or tap a unicorn from the live strip at the top to pre-fill.
-        </p>
-      </div>
-    </section>
   );
 }

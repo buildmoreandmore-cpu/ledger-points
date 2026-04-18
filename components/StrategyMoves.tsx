@@ -42,50 +42,67 @@ export default function StrategyMoves({
       })
     : [];
 
+  const top = moves.slice(0, 3);
+  const hasMore = moves.length > top.length;
+
   return (
     <section
       id="strategy-moves"
       aria-label="Your next move"
       className="border-b hairline"
     >
-      <div className="mx-auto max-w-[1440px] px-4 py-12 md:px-8 md:py-16">
-        <div className="mb-8 grid gap-5 md:grid-cols-12 md:gap-10">
-          <div className="md:col-span-6">
-            <div className="mono-label mb-2 text-accent">
-              Your next move · Updated daily
+      <div className="mx-auto max-w-[1200px] px-4 py-10 md:px-8 md:py-14">
+        <div className="flex items-end justify-between gap-4 mb-6">
+          <div>
+            <div className="eyebrow uppercase tracking-wider mb-1.5">
+              Your next moves
             </div>
-            <h2 className="display text-[26px] leading-[1.05] md:text-[38px]">
-              Five moves that <em>earn you more</em> than your next search.
+            <h2 className="display text-[24px] md:text-[32px]">
+              Based on your wallet
             </h2>
           </div>
-          <div className="md:col-span-5 md:col-start-8 md:pt-4">
-            <p className="text-[14px] leading-[1.55] text-ink-soft md:text-[15px]">
-              Based on the cards you&apos;ve added, the balances you hold, and
-              the transfer bonuses running right now.
-            </p>
-          </div>
+          <a
+            href="/strategy"
+            className="text-[13px] font-medium text-ink-faint hover:text-ink transition-colors underline-offset-4 hover:underline shrink-0"
+          >
+            See all →
+          </a>
         </div>
 
         {!hasEnough ? (
           <Placeholder>
             Add the cards you hold to see your personalized moves.
           </Placeholder>
-        ) : moves.length === 0 ? (
+        ) : top.length === 0 ? (
           <Placeholder>
             Your wallet is well-optimized. Check back when new transfer bonuses
             run.
           </Placeholder>
         ) : (
-          <ul className="flex flex-col gap-3 md:gap-4">
-            {moves.map((m) => (
-              <MoveCard
-                key={m.id}
-                m={m}
-                onRunSearch={onRunSearch}
-                onPickCard={onPickCard}
-              />
-            ))}
-          </ul>
+          <>
+            <ul className="flex flex-col gap-3 md:gap-4">
+              {top.map((m) => (
+                <MoveCard
+                  key={m.id}
+                  m={m}
+                  onRunSearch={onRunSearch}
+                  onPickCard={onPickCard}
+                />
+              ))}
+            </ul>
+            {hasMore ? (
+              <div className="mt-4 text-[13px] text-ink-faint">
+                {moves.length - top.length} more move
+                {moves.length - top.length === 1 ? "" : "s"} on{" "}
+                <a
+                  href="/strategy"
+                  className="text-ink underline-offset-4 hover:underline"
+                >
+                  the strategy page →
+                </a>
+              </div>
+            ) : null}
+          </>
         )}
       </div>
     </section>

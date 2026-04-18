@@ -30,24 +30,8 @@ export default function CardLibrary({ selectedCardIds, onToggle }: Props) {
 
   return (
     <section id="wallet" className="border-b hairline">
-      <div className="mx-auto max-w-[1440px] px-4 py-14 md:px-8 md:py-20">
-        <div className="grid gap-6 md:grid-cols-12 md:gap-10">
-          <div className="md:col-span-5">
-            <div className="mono-label mb-3 text-accent">01 · Your wallet</div>
-            <h2 className="display text-[28px] md:text-[40px]">
-              The cards we know <em>speak</em> to each other.
-            </h2>
-          </div>
-          <div className="md:col-span-6 md:col-start-7 md:pt-4">
-            <p className="text-[15px] leading-[1.55] text-ink-soft md:text-[16px]">
-              Tap the cards you actually hold — not aspirations, not
-              pre-approvals. Every option below is gated by what your points
-              can reach.
-            </p>
-          </div>
-        </div>
-
-        <div className="mt-10 grid grid-cols-2 gap-2.5 md:mt-12 md:grid-cols-4 md:gap-3">
+      <div className="mx-auto max-w-[1200px] px-4 py-8 md:px-8 md:py-12">
+        <div className="grid grid-cols-2 gap-2.5 md:grid-cols-4 md:gap-3">
           {CARDS.map((card, i) => {
             const isOn = selected.has(card.id);
             return (
@@ -110,27 +94,6 @@ export default function CardLibrary({ selectedCardIds, onToggle }: Props) {
           })}
         </div>
 
-        <div className="mt-6 flex items-center gap-2 text-ink-faint">
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 14 14"
-            fill="none"
-            aria-hidden="true"
-          >
-            <circle cx="7" cy="7" r="6" stroke="currentColor" strokeWidth="0.9" />
-            <path
-              d="M7 4 V7 M7 9.5 V10"
-              stroke="currentColor"
-              strokeWidth="0.9"
-              strokeLinecap="round"
-            />
-          </svg>
-          <span className="mono-label">
-            Balances are illustrative — the engine uses the issuer, not your
-            number.
-          </span>
-        </div>
       </div>
     </section>
   );

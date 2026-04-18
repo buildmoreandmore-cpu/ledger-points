@@ -66,21 +66,9 @@ export default function BalancePanel({
 
   return (
     <section className="border-b hairline">
-      <div className="mx-auto max-w-[1440px] px-4 py-12 md:px-8 md:py-16">
-        <div className="grid gap-6 md:grid-cols-12 md:gap-10">
-          <div className="md:col-span-4">
-            <div className="mono-label mb-3 text-accent">
-              01a · Your balances
-            </div>
-            <h2 className="display text-[26px] md:text-[34px]">
-              A real <em>workspace</em>, not a guess.
-            </h2>
-            <p className="mt-3 text-[14px] leading-[1.5] text-ink-soft md:text-[15px]">
-              Enter what you actually have. We&apos;ll price options against
-              your real stash and flag any balance about to expire.
-            </p>
-          </div>
-          <div className="md:col-span-8">
+      <div className="mx-auto max-w-[1200px] px-4 pb-10 md:px-8 md:pb-14">
+        <div>
+          <div>
             <div
               className="bg-paper card-shadow border hairline-strong"
               style={{ borderRadius: "16px" }}
